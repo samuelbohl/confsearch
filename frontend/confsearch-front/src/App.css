@@ -1,0 +1,17 @@
+:root {
+	--main_color: #1895c2;
+}
+
+
+.TipCard {
+	border: 1px solid var(--main_color);
+}
+
+.TipCard > :nth-child(2) {
+	max-width: 25rem;
+	max-height: 10rem;
+}
+
+.TipCard .ant-card-head {
+	border-bottom: 1px solid var(--main_color);
+}
