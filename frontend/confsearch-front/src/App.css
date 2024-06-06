@@ -2,16 +2,74 @@
 	--main_color: #1895c2;
 }
 
+/*
+	-General classes have no prefix
+	-Page specific classes are prefixed with the page name
+*/
+
+.Logo {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	justify-content: center;
+	font-size: 25px;
+	font-weight: bold;
+}
+
+.NavBarContainer {
+	position: sticky;
+	top: 0px;
+	z-index: 1;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	border-bottom: 2px solid var(--main_color);
+}
+
+.Footer {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	border-top: 2px solid var(--main_color);
+	padding: 10px 0px;
+}
+
+.Main_Body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 6rem;
+	gap: 28rem;
+}
+
+@media only screen and (min-width: 992px) {
+	.SearchBar {
+		width: 60rem;
+	}
+}
+
+.Main_Carousel {
+	max-width: 25rem;
+}
 
 .TipCard {
 	border: 1px solid var(--main_color);
 }
 
-.TipCard > :nth-child(2) {
+.TipCard> :nth-child(2) {
 	max-width: 25rem;
 	max-height: 10rem;
 }
 
 .TipCard .ant-card-head {
 	border-bottom: 1px solid var(--main_color);
+}
+
+
+.Main_Actions {
+	width: 100%;
 }

@@ -12,16 +12,7 @@ const NavBar = ({ children }) => {
 
     return (
         <Layout style={{ height: "100vh" }}>
-            <Header style={{
-                background: colorBgContainer,
-                position: 'sticky',
-                top: 0,
-                zIndex: 1,
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                borderBottom: "2px solid var(--main_color)",
-            }}>
+            <Header className='NavBarContainer' style={{background: colorBgContainer}}>
                 <Logo />
 
             </Header>
@@ -30,16 +21,7 @@ const NavBar = ({ children }) => {
                 {children}
             </Content>
             
-            <Footer style={{
-                background: colorBgContainer,
-                position: 'sticky',
-                bottom: 0,
-                zIndex: 1,
-                display: "flex", 
-                alignItems: "center", 
-                justifyContent: "space-around",
-                borderTop: "2px solid var(--main_color)"
-            }}>
+            <Footer className='Footer' style={{ background: colorBgContainer }}>
                 <Image
                     width={200}
                     src={"/confsearch-logo.png"}
@@ -51,7 +33,7 @@ const NavBar = ({ children }) => {
                     preview={false}
                 />
             </Footer>
-        </Layout>
+        </Layout >
     );
 }
 

@@ -1,4 +1,4 @@
-import { Carousel, Card } from "antd";
+import { Carousel, Card, Button } from "antd";
 
 // const tip5: HTMLElement = (
 //     <div>
@@ -19,7 +19,7 @@ import { Carousel, Card } from "antd";
 //         <div className="h5">About</div>
 //         <p>
 //             If you want to learn more about who created this webpage, then please{" "}
-//             <a className="alert-link" href="/about">
+//             <Button type="link" className="alert-link" href="/about">
 //                 click here
 //             </a>
 //             .
@@ -32,7 +32,7 @@ import { Carousel, Card } from "antd";
 
 const Tips = () => {
     return (
-        <Carousel dots={false} fade={true} style={{ maxWidth: "25rem" }} autoplay autoplaySpeed={5000}>
+        <Carousel dots={false} fade={true} className="Main_Carousel" autoplay autoplaySpeed={5000}>
             <div>
                 <Card title="Keyword Search" className="TipCard">
                     <div>
@@ -46,7 +46,7 @@ const Tips = () => {
                 <Card title="Author Search" className="TipCard">
                     <div>
                         You can search for authors, which results in an author search request. The results will be based on where
-                        the author has published recently. The names of the authors are based on <a href="https://dblp.org/">dblp</a>.
+                        the author has published recently. The names of the authors are based on <Button type="link" href="https://dblp.org/">dblp</Button>.
                     </div>
                 </Card>
             </div>
@@ -73,7 +73,7 @@ const Tips = () => {
             <div>
                 <Card title="Contact" className="TipCard">
                     <div>
-                        If you should run into any trouble. Do not hesitate to reach out to us by <a href="mailto:alexthillen852@gmail.com">mail</a>.
+                        If you should run into any trouble. Do not hesitate to reach out to us by <Button type="link" href="mailto:alexthillen852@gmail.com">mail</Button>.
                     </div>
                 </Card>
             </div>

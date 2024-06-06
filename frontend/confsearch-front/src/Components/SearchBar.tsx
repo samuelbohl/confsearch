@@ -13,7 +13,8 @@ const SearchBar = () => {
             allowClear
             enterButton="Search"
             size="large"
-            style={{ width: "60rem" }}
+            // style={{ width: "60rem" }}
+            className="SearchBar"
             onSearch={onSearch}
         />
     )
