@@ -4,8 +4,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ContextProvider } from "./Context/Context";
-import MainPage from './Pages/Main';
 import { ConfigProvider } from 'antd';
+import MainPage from './Pages/Main';
+import SearchResults from './Pages/SearchResults';
+import ErrorPage from './Pages/Error';
+import EditConference from './Pages/EditConference';
 
 const queryClient = new QueryClient();
 
@@ -14,7 +17,17 @@ function App() {
 		{
 			path: "/",
 			element: <MainPage />,
-			errorElement: <></>,
+			errorElement: <ErrorPage />,
+		},
+		{
+			path: "/search",
+			element: <SearchResults />,
+			errorElement: <ErrorPage />,
+		},
+		{
+			path: "/edit",
+			element: <EditConference />,
+			errorElement: <ErrorPage />,
 		}
 	]);
 
@@ -26,6 +39,7 @@ function App() {
 						token: {
 							// Seed Token
 							colorPrimary: '#1895c2',
+							colorError: "#EF982C"
 						},
 					}}
 				>
