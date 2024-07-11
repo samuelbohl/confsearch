@@ -63,8 +63,13 @@
 
 .SearchResults_Headers {
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 14px;
 }
+
+/* .SearchResults_Headers_Edit {
+	font-weight: bold;
+	font-size: 14px;
+} */
 
 td.Timetable_Column {
 	padding: 0 !important;

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "generate-interfaces": "openapi --input ../../backend/public-api.yaml --output ./src/Services --name ConfSearchClient",
+    "open-mock-server": "open-api-mocker -s ../../backend/public-api.yaml -w",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -14,6 +16,7 @@
     "@tanstack/react-query": "^5.40.0",
     "@tanstack/react-query-devtools": "^5.40.0",
     "antd": "^5.17.4",
+    "dayjs": "^1.11.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
@@ -28,6 +31,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "open-api-mocker": "^2.0.0",
+    "openapi-typescript-codegen": "^0.29.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }

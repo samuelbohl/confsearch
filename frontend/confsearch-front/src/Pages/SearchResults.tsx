@@ -1,20 +1,23 @@
-import { CalendarOutlined, EditOutlined, FileDoneOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { EditOutlined, FileDoneOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { AiOutlineClockCircle, AiOutlinePlayCircle, AiOutlineStop } from "react-icons/ai";
 import NavBar from "../Components/NavBar";
 import SearchBar from "../Components/SearchBar";
 import { Table, Button, Tooltip } from "antd";
-import IConference from "../Interfaces/IConference";
-import dataSource from "../MockData/Conferences";
+// import dataSource from "../MockData/Conferences";
 import { useContext } from "react";
 import { Context } from "../Context/Context";
 import { useNavigate } from "react-router-dom";
+import { Conference, ConferenceWithEvents, Event } from "../Services";
 
 const { Column, ColumnGroup } = Table;
 
 const SearchResults = () => {
 
-    const { setConferenceToEdit } = useContext(Context)
+    const { setConferenceToEdit, setConferenceToView, appClient } = useContext(Context)
     const navigate = useNavigate()
+
+    // console.log(await appClient.default.getApiV1Conferences());
+    // debugger;
 
     // Month Util Functions
     const get12MonthsAhead = (): string[] => {
@@ -40,107 +43,150 @@ const SearchResults = () => {
     const daysInMonth = (year: number, month: number) => {
         return new Date(year, month, 0).getDate();
     }
-    const renderTimeTableCell = (month: string, record: IConference) => {
-        debugger;
-        // const currentDate = new Date();
-        // // const conference = ConferenceWithDates.ParseConferenceDates(record);
 
-        // // Check if conference has essential dates for the current month
-        // const hasStart = conference.start ? isInThisMonth(conference.start, month) : false;
-        // const hasEnd = conference.end ? isInThisMonth(conference.end, month) : false;
-        // const hasNotification = conference.notification ? isInThisMonth(conference.notification, month) : false;
-        // const hasDeadline = conference.deadline ? isInThisMonth(conference.deadline, month) : false;
+    const renderTimeTableCell = (month: string, record: ConferenceWithEvents) => {
+        // debugger;
+        const currentDate = new Date();
 
-        // // Check if conference dates are after the current date
-        // const isStartAfter = conference.start ? conference.start > currentDate : false;
-        // const isEndAfter = conference.end ? conference.end > currentDate : false;
-        // const isNotificationAfter = conference.notification ? conference.notification > currentDate : false;
-        // const isDeadlineAfter = conference.deadline ? conference.deadline > currentDate : false;
+        let nearFutureEvents: Event[] = [];
+        if (record.events !== undefined && record.events.length > 0) {
+            nearFutureEvents = record.events
+                .filter(event =>
+                    new Date(event.start ?? "") > currentDate ||
+                    new Date(event.end ?? "") > currentDate ||
+                    new Date(event.paper_submission ?? "") > currentDate ||
+                    new Date(event.abstract_submission ?? "") > currentDate ||
+                    new Date(event.notification_due ?? "") > currentDate ||
+                    new Date(event.final_due ?? "") > currentDate ||
+                    new Date(event.camera_ready ?? "") > currentDate
+                )
+        }
+        // nearFutureEvents.map(event => {
 
-        // // Check if conference dates are on the same year as the current date
-        // const isStartSameYear = conference.start ? conference.start.getFullYear() == currentDate.getFullYear() : false;
-        // const isEndSameYear = conference.end ? conference.end.getFullYear() == currentDate.getFullYear() : false;
-        // const isNotificationSameYear = conference.notification ? conference.notification.getFullYear() == currentDate.getFullYear() : false;
-        // const isDeadlineSameYear = conference.deadline ? conference.deadline.getFullYear() == currentDate.getFullYear() : false;
+        //     // Check if conference has essential dates for the current month
+        //     const hasStart = event.start ? isInThisMonth(event.start, month) : false;
+        //     const hasEnd = event.end ? isInThisMonth(event.end, month) : false;
+        //     const hasNotification = event.notification_due ? isInThisMonth(event.notification_due, month) : false;
+        //     const hasDeadline = event.final_due ? isInThisMonth(event.final_due, month) : false;
 
-        // // debugger;
+        //     // Check if conference dates are after the current date
+        //     const isStartAfter = event.start ? event.start > currentDate : false;
+        //     const isEndAfter = event.end ? event.end > currentDate : false;
+        //     const isNotificationAfter = event.notification_due ? event.notification_due > currentDate : false;
+        //     const isDeadlineAfter = event.final_due ? event.final_due > currentDate : false;
 
-        // // Build notification icon
-        // const notificationIcon = (
-        //     <Tooltip title={<span>Notification Date: {conference.notification?.toDateString()}</span>}>
-        //         <FileDoneOutlined
-        //             className="Timetable_Icon"
-        //             style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
-        //         />
-        //     </Tooltip>
-        // );
+        //     // Check if conference dates are on the same year as the current date
+        //     const isStartSameYear = event.start ? event.start.getFullYear() == currentDate.getFullYear() : false;
+        //     const isEndSameYear = event.end ? event.end.getFullYear() == currentDate.getFullYear() : false;
+        //     const isNotificationSameYear = event.notification_due ? event.notification_due.getFullYear() == currentDate.getFullYear() : false;
+        //     const isDeadlineSameYear = event.final_due ? event.final_due.getFullYear() == currentDate.getFullYear() : false;
 
+        //     // debugger;
 
-        // // Build deadline icon
-        // const deadlineIcon = (
-        //     <Tooltip title={<span>Deadline Date: {conference.deadline?.toDateString()}</span>}>
-        //         <AiOutlineClockCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
-        //     </Tooltip>
-        // );
+        //     return {
+        //         title: event.title,
+        //         show
+        //     }
+        // })
 
+        const start = new Date(nearFutureEvents[0].start ?? "");
+        const end = new Date(nearFutureEvents[0].end ?? "");
+        const notificationDue = new Date(nearFutureEvents[0].notification_due ?? "");
+        const finalDue = new Date(nearFutureEvents[0].final_due ?? "");
 
-        // // Build start icon
-        // const startIcon = (
-        //     <Tooltip title={<span>Start Date: {conference.start?.toDateString()}</span>}>
-        //         <AiOutlinePlayCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isStartAfter ? "" : "var(--invalid_color)" }} />
-        //     </Tooltip>
-        // );
+        // Check if conference has essential dates for the current month
+        const hasStart = nearFutureEvents[0].start ? isInThisMonth(start, month) : false;
+        const hasEnd = nearFutureEvents[0].end ? isInThisMonth(end, month) : false;
+        const hasNotification = nearFutureEvents[0].notification_due ? isInThisMonth(notificationDue, month) : false;
+        const hasDeadline = nearFutureEvents[0].final_due ? isInThisMonth(finalDue, month) : false;
 
-        // // Build end icon
-        // const endIcon = (
-        //     <Tooltip title={<span>End Date: {conference.end?.toDateString()}</span>}>
-        //         <AiOutlineStop
-        //             className="Timetable_Icon"
-        //             style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
-        //         />
-        //     </Tooltip>
-        // );
+        // Check if conference dates are after the current date
+        const isStartAfter = nearFutureEvents[0].start ? start > currentDate : false;
+        const isEndAfter = nearFutureEvents[0].end ? end > currentDate : false;
+        const isNotificationAfter = nearFutureEvents[0].notification_due ? notificationDue > currentDate : false;
+        const isDeadlineAfter = nearFutureEvents[0].final_due ? finalDue > currentDate : false;
 
-        // if (isCurrentMonth(month)) {
-        //     const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
-        //     const interval = (100 / days) * currentDate.getDay();
+        // Check if conference dates are on the same year as the current date
+        const isStartSameYear = nearFutureEvents[0].start ? start.getFullYear() == currentDate.getFullYear() : false;
+        const isEndSameYear = nearFutureEvents[0].end ? end.getFullYear() == currentDate.getFullYear() : false;
+        const isNotificationSameYear = nearFutureEvents[0].notification_due ? notificationDue.getFullYear() == currentDate.getFullYear() : false;
+        const isDeadlineSameYear = nearFutureEvents[0].final_due ? finalDue.getFullYear() == currentDate.getFullYear() : false;
 
-        //     return (
-        //         <div>
-        //             <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
-        //                 <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
-        //             </Tooltip>
-
-        //             {hasNotification && isNotificationSameYear ? notificationIcon : <></>}
-        //             {hasDeadline && isDeadlineSameYear ? deadlineIcon : <></>}
-        //             {hasStart && isStartSameYear ? startIcon : <></>}
-        //             {hasEnd && isEndSameYear ? endIcon : <></>}
-        //         </div>
-
-        //     )
-        // }
+        // Build notification icon
+        const notificationIcon = (
+            <Tooltip title={<span>Notification Date: {nearFutureEvents[0].notification_due?.toDateString()}</span>}>
+                <FileDoneOutlined
+                    className="Timetable_Icon"
+                    style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
+                />
+            </Tooltip>
+        );
 
 
-        // return (
-        //     <div>
-        //         {hasNotification && isNotificationAfter ? notificationIcon : <></>}
-        //         {hasDeadline && isDeadlineAfter ? deadlineIcon : <></>}
-        //         {hasStart && isStartAfter ? startIcon : <></>}
-        //         {hasEnd && isEndAfter ? endIcon : <></>}
-        //     </div>
-        // )
+        // Build deadline icon
+        const deadlineIcon = (
+            <Tooltip title={<span>Deadline Date: {nearFutureEvents[0].final_due?.toDateString()}</span>}>
+                <AiOutlineClockCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
+            </Tooltip>
+        );
+
+
+        // Build start icon
+        const startIcon = (
+            <Tooltip title={<span>Start Date: {nearFutureEvents[0].start?.toDateString()}</span>}>
+                <AiOutlinePlayCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isStartAfter ? "" : "var(--invalid_color)" }} />
+            </Tooltip>
+        );
+
+        // Build end icon
+        const endIcon = (
+            <Tooltip title={<span>End Date: {nearFutureEvents[0].end?.toDateString()}</span>}>
+                <AiOutlineStop
+                    className="Timetable_Icon"
+                    style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
+                />
+            </Tooltip>
+        );
+        if (isCurrentMonth(month)) {
+            const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+            const interval = (100 / days) * currentDate.getDay();
+
+            return (
+                <div>
+                    <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
+                        <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
+                    </Tooltip>
+
+                    {hasNotification && isNotificationSameYear ? notificationIcon : <></>}
+                    {hasDeadline && isDeadlineSameYear ? deadlineIcon : <></>}
+                    {hasStart && isStartSameYear ? startIcon : <></>}
+                    {hasEnd && isEndSameYear ? endIcon : <></>}
+                </div>
+
+            )
+        }
+
+
+        return (
+            <div>
+                {hasNotification && isNotificationAfter ? notificationIcon : <></>}
+                {hasDeadline && isDeadlineAfter ? deadlineIcon : <></>}
+                {hasStart && isStartAfter ? startIcon : <></>}
+                {hasEnd && isEndAfter ? endIcon : <></>}
+            </div>
+        )
+
         return (<></>);
     }
 
     // Edit Functions
-
-    const onEditRow = (record: IConference) => {
+    const onEditRow = (record: Conference) => {
         setConferenceToEdit(record)
         navigate("/edit");
     }
 
-    const viewDetails = (record: IConference) => {
-        setConferenceToEdit(record)
+    const viewDetails = (record: Conference) => {
+        setConferenceToView(record)
         navigate("/details");
     }
 
@@ -150,7 +196,7 @@ const SearchResults = () => {
             <div className="SearchResults_Body">
                 <SearchBar />
 
-                <Table style={{ width: "100vw" }} dataSource={dataSource}
+                <Table style={{ width: "100vw" }}
                     pagination={{
                         defaultPageSize: 10,
                         pageSize: 10,
@@ -161,17 +207,17 @@ const SearchResults = () => {
 
                     <ColumnGroup title={<span className="SearchResults_Headers">Actions</span>}>
 
-                        <Column align="center" render={(_, conference: IConference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
-                        <Column align="center" render={(_, conference: IConference) => <InfoCircleOutlined onClick={() => {viewDetails(conference)}} style={{ fontSize: "2em", cursor: "pointer" }} />} />
+                        {/* <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
+                        <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
                         {/* <Column align="center" render={() => <CalendarOutlined style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
 
                     </ColumnGroup>
 
                     <ColumnGroup title={<span className="SearchResults_Headers">Information</span>}>
                         <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
-                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: IConference) => <Button type='link' href={record.website}>{record.title}</Button>} />
+                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
                         <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
-                        {/* <Column title={<span className="SearchResults_Headers">Location</span>} dataIndex='location' align="center" width='10%' /> */}
+                        <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfp_url}>See on Wikicfp</Button>} />
                     </ColumnGroup>
 
                     <ColumnGroup title={<span className="SearchResults_Headers">Timetable</span>} dataIndex='' align="center" width='55%'>
@@ -183,7 +229,7 @@ const SearchResults = () => {
                                         className="Timetable_Column"
                                         title={<span className="SearchResults_Headers">{month}</span>}
                                         align="center"
-                                        render={(_: string, record: IConference) => renderTimeTableCell(month, record)}
+                                        render={(_: string, record: Conference) => renderTimeTableCell(month, record)}
                                     />
                                 )
                         }

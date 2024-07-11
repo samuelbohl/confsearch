@@ -9,6 +9,7 @@ import MainPage from './Pages/Main';
 import SearchResults from './Pages/SearchResults';
 import ErrorPage from './Pages/Error';
 import EditConference from './Pages/EditConference';
+import ViewConference from './Pages/ViewConference';
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,11 @@ function App() {
 		{
 			path: "/edit",
 			element: <EditConference />,
+			errorElement: <ErrorPage />,
+		},
+		{
+			path: "/details",
+			element: <ViewConference />,
 			errorElement: <ErrorPage />,
 		}
 	]);
