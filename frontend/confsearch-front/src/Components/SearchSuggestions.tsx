@@ -51,13 +51,13 @@ const SearchSuggestions = () => {
 
 			<Space direction="vertical" style={{ width: "100%" }}>
 				<Space>
-					<Button type="primary" size="large" onClick={() => navigate("?query=Donald+E.+Knuth")}>Donald E. Knuth</Button>
-					<Button type="primary" size="large" onClick={() => navigate("?query=high-performance+computing+regression")}>high-performance computing</Button>
+					<Button type="primary" size="large" onClick={() => navigate("/search?query=Donald+E.+Knuth")}>Donald E. Knuth</Button>
+					<Button type="primary" size="large" onClick={() => navigate("/search?query=high-performance+computing+regression")}>high-performance computing</Button>
 				</Space>
 				<Space>
 
-					<Button type="primary" size="large" onClick={() => navigate("?query=RTSS")}>IEEE Real-Time Systems Symposium</Button>
-					<Button type="primary" size="large" onClick={() => navigate("?query=LICS+STOC+FOCS+STACS")}>LICS STOC FOCS STACS</Button>
+					<Button type="primary" size="large" onClick={() => navigate("/search?query=RTSS")}>IEEE Real-Time Systems Symposium</Button>
+					<Button type="primary" size="large" onClick={() => navigate("/search?query=LICS+STOC+FOCS+STACS")}>LICS STOC FOCS STACS</Button>
 				</Space>
 
 			</Space>

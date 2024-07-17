@@ -1,13 +1,14 @@
 {
-  "name": "antd-demo",
+  "name": "confsearch",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "generate-interfaces": "openapi --input ../../backend/public-api.yaml --output ./src/Services --name ConfSearchClient",
     "open-mock-server": "open-api-mocker -s ../../backend/public-api.yaml -w",
+    "mock-answers": "open-api-mocker -s ./public-api-with-samples.yaml -w",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
