@@ -3,21 +3,23 @@ export const get12MonthsAhead = (): string[] => {
     const result: string[] = [];
 
     const currentDate = new Date();
-    result.push(currentDate.toLocaleString('default', { month: 'short' }));
+    // currentDate.setFullYear(currentDate.getFullYear() + yearOffset);
+    result.push(currentDate.toLocaleString('en-gb', { month: 'short' }));
 
     for (let i = 0; i < 11; i++) {
         currentDate.setMonth(currentDate.getMonth() + 1)
-        const month = currentDate.toLocaleString('default', { month: 'short' });
+        //year: "2-digit"
+        const month = currentDate.toLocaleString('en-gb', { month: 'short' });
         result.push(month)
     }
 
     return result;
 }
 export const isCurrentMonth = (month: string) => {
-    return month.toLowerCase() == (new Date()).toLocaleString('default', { month: 'short' }).toLowerCase()
+    return month.toLowerCase() == (new Date()).toLocaleString('en-gb', { month: 'short' }).toLowerCase()
 }
 export const isInThisMonth = (date: Date, month: string) => {
-    return month.toLowerCase() == date.toLocaleString('default', { month: 'short' }).toLowerCase()
+    return month.toLowerCase() == date.toLocaleString('en-gb', { month: 'short' }).toLowerCase()
 }
 export const daysInMonth = (year: number, month: number) => {
     return new Date(year, month, 0).getDate();

@@ -6,7 +6,7 @@ import { Table, Button, Tooltip, Switch, Dropdown, Space, MenuProps } from "antd
 // import dataSource from "../MockData/Conferences";
 import { useContext, useEffect } from "react";
 import { Context } from "../Context/Context";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Conference, ConferenceWithEvents, Event } from "../Services";
 import { useQuery } from "@tanstack/react-query";
 import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth } from "../Utils/utils";
@@ -15,7 +15,7 @@ const { Column, ColumnGroup } = Table;
 
 const SearchResults = () => {
 
-    const { appClient, setConferenceToEdit, setConferenceToView, } = useContext(Context)
+    const { appClient } = useContext(Context)
     const navigate = useNavigate()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchParams, setSearchParams] = useSearchParams()
@@ -32,9 +32,9 @@ const SearchResults = () => {
         queryFn: (searchConferences)
     });
 
-    useEffect(() => {
-        // console.log("aaaaaaa")
-    }, [isRefetching])
+    // useEffect(() => {
+    //     // console.log("aaaaaaa")
+    // }, [isRefetching])
 
     useEffect(() => {
         refetch()
@@ -182,19 +182,21 @@ const SearchResults = () => {
                 {hasPaperSubmission && isPaperAfter ? paperIcon : <></>}
             </div>
         )
-
-        return (<></>);
     }
 
-    // // Edit Functions
-    // const onEditRow = (record: Conference) => {
-    //     setConferenceToEdit(record)
-    //     navigate("/edit");
-    // }
+    // Edit Functions
+    const onEditRow = (record: Conference) => {
+        // setConferenceToEdit(record)
+        navigate("/edit");
+    }
 
     const viewDetails = (record: Conference) => {
-        setConferenceToView(record)
-        navigate("/details");
+        navigate({
+            pathname: "/details",
+            search: createSearchParams({
+                id: record.id?.toString() ?? ""
+            }).toString()
+        });
     }
 
     // const filterItems: MenuProps['items'] = [
@@ -231,14 +233,14 @@ const SearchResults = () => {
                             pageSize: 10,
                             position: ["bottomLeft"]
                         }}
-                        dataSource={results}
+                        dataSource={results?.map((res, index)=> ({...res, key: index}))}
                         loading={loading}
                     >
                         <Column dataIndex='key' hidden={true} key='id' />
 
                         <ColumnGroup title={<span className="SearchResults_Headers">Actions</span>}>
 
-                            {/* <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
+                            <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
                             <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
                             {/* <Column align="center" render={() => <CalendarOutlined style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
 

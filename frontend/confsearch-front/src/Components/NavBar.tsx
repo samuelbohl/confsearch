@@ -18,7 +18,7 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
             </Header>
 
             <Content style={{
-                padding: '2rem',
+                padding: '1rem',
                 background: "var(--white)"
             }}>
                 {children}
