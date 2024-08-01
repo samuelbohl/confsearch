@@ -1,5 +1,5 @@
 import { initDb } from "@api/db";
-import {searchRoutes, testRoutes} from "@api/routes";
+import { eventsRoutes, searchRoutes, testRoutes } from "@api/routes";
 import { env, Logger, Redis } from "@api/utils";
 import fastify from "fastify";
 import { middleware } from "./modules/middleware";
@@ -25,10 +25,13 @@ export const main = async () => {
 
   // Routes
   server.register(testRoutes, {
-    prefix: `/${API_VERSION}/test`,
+    prefix: `/api/${API_VERSION}/test`,
   });
   server.register(searchRoutes, {
-    prefix: `/${API_VERSION}/search`,
+    prefix: `/api//${API_VERSION}/search`,
+  });
+  server.register(eventsRoutes, {
+    prefix: `/api/${API_VERSION}/events`,
   });
 
   server.listen({ host: env.HOST, port: env.PORT }, (error, address) => {
