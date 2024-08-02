@@ -20,7 +20,7 @@ paths:
             application/json:
               schema:
                 type: array
-                x-count: 10
+                x-count: 30
                 items:
                   $ref: '#/components/schemas/ConferenceWithEvents'
         '400':

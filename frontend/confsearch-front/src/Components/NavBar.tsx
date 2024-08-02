@@ -18,7 +18,8 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
             </Header>
 
             <Content style={{
-                background: "var(--white)"
+                background: "var(--white)",
+                overflowY: "auto"
             }}>
                 {children}
             </Content>

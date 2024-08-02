@@ -7,6 +7,10 @@
 	--invalid_color: #EF982C;
 }
 
+/* html {
+	font-size: 10px;
+} */
+
 .Logo {
 	display: flex;
 	gap: 1rem;
@@ -44,7 +48,7 @@
 	align-items: center;
 	justify-content: center;
 	margin: 2rem;
-	gap: 20vh;
+	gap: 30vh;
 }
 
 .SearchResults_Body {
@@ -56,10 +60,17 @@
 	gap: 4rem;
 }
 
-.SearchResults_Headers {
+.ViewConference_Body {
+	display: flex;
+	margin: 1rem;
+	gap: 2rem;
+	min-height: calc(100% - 2 * 1rem);
+}
+
+/* .SearchResults_Headers {
 	font-weight: bold;
 	font-size: 14px;
-}
+} */
 
 td.Timetable_Column {
 	padding: 0 !important;
@@ -67,7 +78,7 @@ td.Timetable_Column {
 
 .Timetable_Marker {
 	width: 3px;
-	height: 4rem;
+	height: 100%;
 	background: var(--main_color);
 	position: absolute;
 	top: 0;
@@ -75,13 +86,11 @@ td.Timetable_Column {
 }
 
 .Timetable_Icon {
-	font-size: 2em;
+	font-size: 1.5rem;
 }
 
-@media only screen and (min-width: 992px) {
-	.SearchBar {
-		width: 60rem;
-	}
+.SearchBar {
+	width: 40rem;
 }
 
 .Main_Carousel {
@@ -102,9 +111,9 @@ td.Timetable_Column {
 }
 
 
-.Main_Actions {
+/* .Main_Actions {
 	width: 100%;
-}
+} */
 
 .ErrorPage {
 	height: 100vh;
@@ -131,7 +140,7 @@ td.Timetable_Column {
 	height: 100%;
 }
 
-.ant-spin-nested-loading { 
+.ant-spin-nested-loading {
 	height: 100%;
 }
 
