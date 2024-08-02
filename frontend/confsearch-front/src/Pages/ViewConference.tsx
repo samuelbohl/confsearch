@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../Context/Context";
 import NavBar from "../Components/NavBar";
-import { Form, Input, Layout, Menu, MenuProps, Spin, Tabs, TabsProps } from "antd";
+import { Button, Descriptions, DescriptionsProps, Layout, Menu, MenuProps, Tabs, TabsProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content } from "antd/es/layout/layout";
 import { useQuery } from "@tanstack/react-query";
@@ -134,71 +134,78 @@ const ViewConference = () => {
     }
     // End of tab controls
 
+    const conferenceInformation: DescriptionsProps['items'] = [
+        {
+            key: "1",
+            label: "Acronym",
+            children: queryResult?.acronym
+        },
+        {
+            key: "2",
+            label: "Conference Title",
+            children: queryResult?.title
+        },
+        {
+            key: "3",
+            label: "Conference Website",
+            children: (
+                <Button style={{ padding: "0" }} type="link" href={queryResult?.website} >
+                    {queryResult?.website}
+                </Button>
+            )
+        },
+        {
+            key: "4",
+            label: "Conference Website (Wikicfp)",
+            children: (
+                <Button style={{ padding: "0" }} type="link" href={queryResult?.wikicfp_url} >
+                    {queryResult?.wikicfp_url}
+                </Button>
+            )
+        },
+        {
+            key: "5",
+            label: "Core Rank",
+            children: queryResult?.core_rank
+        }
+    ]
+
 
     return (
         <NavBar>
-            <Spin spinning={loading}>
-                <Layout style={{ minHeight: '100%', background: "inherit" }}>
-                    <Sider theme="light">
-                        <Menu
-                            onClick={onMenuSelect}
-                            mode="inline"
-                            items={menuEvents}
-                        />
-                    </Sider>
-                    <Content style={{ padding: "0 0.5rem", height: "100%" }}>
-                        {loading ? <></> :
-                            <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
-                                <span>General Conference Information</span>
-                                <div style={{ padding: "1rem" }}>
+            {/* <Spin spinning={loading}> */}
+            <Layout style={{ minHeight: '100%', background: "inherit" }}>
+                <Sider theme="light">
+                    <Menu
+                        onClick={onMenuSelect}
+                        mode="inline"
+                        items={menuEvents}
+                    />
+                </Sider>
+                <Content style={{ padding: "0 0.5rem" }}>
+                    {loading ? <></> :
+                        <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
+                            <Descriptions
+                                bordered
+                                title="Conference Information"
+                                items={conferenceInformation}
+                            />
+                        </div>
+                    }
 
-                                    <Form
-                                        // disabled={true}
-                                        layout="inline"
-                                        initialValues={queryResult}
-
-                                    >
-                                        <Form.Item name="id" label="ID" hidden>
-                                            <Input style={{ width: "4rem" }} />
-                                        </Form.Item>
-
-                                        <Form.Item name="acronym" label="Acronym">
-                                            <Input style={{ width: "8rem" }} />
-                                        </Form.Item>
-
-                                        <Form.Item name="title" label="Conference Title">
-                                            <Input style={{ width: "22rem" }} />
-                                        </Form.Item>
-
-                                        <Form.Item name="website" label="Conference Website">
-                                            <Input style={{ width: "15rem" }} type="url" />
-                                        </Form.Item>
-
-                                        <Form.Item name="wikicfp_url" label="Wikicfp URL">
-                                            <Input style={{ width: "27rem" }} type="url" />
-                                        </Form.Item>
-
-                                        <Form.Item name="core_rank" label="Rank">
-                                            <Input style={{ width: "3rem" }} />
-                                        </Form.Item>
-                                    </Form>
-                                </div>
-                            </div>
-                        }
-
-                        <Tabs
-                            type="editable-card"
-                            activeKey={activeKey}
-                            defaultActiveKey="1"
-                            items={tabEvents}
-                            onChange={onTabChange}
-                            onEdit={onTabEdit}
-                            hideAdd
-                            style={{height: "100%"}}
-                        />
-                    </Content>
-                </Layout>
-            </Spin>
+                    <Tabs
+                        type="editable-card"
+                        activeKey={activeKey}
+                        defaultActiveKey="1"
+                        items={tabEvents}
+                        onChange={onTabChange}
+                        onEdit={onTabEdit}
+                        hideAdd
+                    // style={{ height: "100%" }}
+                    />
+                </Content>
+            </Layout>
+            {/* </Spin> */}
 
 
         </NavBar>

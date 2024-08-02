@@ -185,10 +185,10 @@ const SearchResults = () => {
     }
 
     // Edit Functions
-    const onEditRow = (record: Conference) => {
-        // setConferenceToEdit(record)
-        navigate("/edit");
-    }
+    // const onEditRow = (record: Conference) => {
+    //     // setConferenceToEdit(record)
+    //     navigate("/edit");
+    // }
 
     const viewDetails = (record: Conference) => {
         navigate({
@@ -216,18 +216,8 @@ const SearchResults = () => {
                 <SearchBar />
 
                 <div style={{ width: "100%" }}>
-                    {/* <div style={{ display: "flex", justifyContent: "flex-end", paddingBottom: "10px" }}>
-                        <Dropdown menu={{ filterItems }} trigger={['click']}>
-                            <a style={{ fontSize: "16px", display: "flex", alignItems: "center" }} onClick={(e) => e.preventDefault()}>
-                                <Space>
-                                    <AiOutlineFilter style={{ display: "block", margin: "auto" }} />
-                                    Filters
-                                </Space>
-                            </a>
-                        </Dropdown>
-                    </div> */}
 
-                    <Table style={{ width: "100vw" }}
+                    <Table style={{ width: "100vw", height: "100%" }}
                         pagination={{
                             defaultPageSize: 10,
                             pageSize: 10,
@@ -238,19 +228,18 @@ const SearchResults = () => {
                     >
                         <Column dataIndex='key' hidden={true} key='id' />
 
-                        <ColumnGroup title={<span className="SearchResults_Headers">Actions</span>}>
-
-                            <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
+                        <ColumnGroup>
+                        {/* title={<span className="SearchResults_Headers">Actions</span>} */}
+                            {/* <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
                             <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
-                            {/* <Column align="center" render={() => <CalendarOutlined style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
 
                         </ColumnGroup>
 
                         <ColumnGroup title={<span className="SearchResults_Headers">Information</span>}>
                             <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
                             <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
-                            <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
                             <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfp_url}>See on Wikicfp</Button>} />
+                            <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
                         </ColumnGroup>
 
                         <ColumnGroup title={<span className="SearchResults_Headers">Timetable</span>} dataIndex='' align="center" width='55%'>

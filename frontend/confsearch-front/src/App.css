@@ -7,11 +7,6 @@
 	--invalid_color: #EF982C;
 }
 
-/*
-	-General classes have no prefix
-	-Page specific classes are prefixed with the page name
-*/
-
 .Logo {
 	display: flex;
 	gap: 1rem;
@@ -49,7 +44,7 @@
 	align-items: center;
 	justify-content: center;
 	margin: 2rem;
-	gap: 38vh;
+	gap: 20vh;
 }
 
 .SearchResults_Body {
@@ -65,11 +60,6 @@
 	font-weight: bold;
 	font-size: 14px;
 }
-
-/* .SearchResults_Headers_Edit {
-	font-weight: bold;
-	font-size: 14px;
-} */
 
 td.Timetable_Column {
 	padding: 0 !important;
@@ -123,7 +113,6 @@ td.Timetable_Column {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	/* background: radial-gradient(circle, var(--darkened_color) 10%, var(--grayed_color) 100%); */
 }
 
 .ErrorCard {
