@@ -8,11 +8,9 @@ const { Search } = Input
 
 const SearchBar = () => {
     const navigate = useNavigate();
-    // const [value, setValue] = useState("");
     const { searchValue, setSearchValue } = useContext(Context)
 
     const onSearch: SearchProps['onSearch'] = async (value) => {
-        // setValue(value)
         navigate({
             pathname: "/search",
             search: createSearchParams({
@@ -27,7 +25,6 @@ const SearchBar = () => {
             allowClear
             enterButton="Search"
             size="large"
-            // style={{ width: "60rem" }}
             className="SearchBar"
             onSearch={onSearch}
             onChange={(e) => setSearchValue(e.target.value)}

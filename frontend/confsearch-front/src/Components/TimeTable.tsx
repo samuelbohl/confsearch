@@ -1,39 +1,37 @@
 import { Button, DatePicker, Table, Tooltip } from "antd";
-import { Event } from "../../Services";
+import { Event } from "../Services";
 import Column from "antd/es/table/Column";
-import { CSSProperties } from "react";
 import dayjs from "dayjs"
 import { EditOutlined } from "@ant-design/icons";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TimeTable = (
-    { events, style, setIsEditingEvent, setEventToEdit }:
-        { setEventToEdit: (React.Dispatch<React.SetStateAction<Event | null>> | null), setIsEditingEvent: (React.Dispatch<React.SetStateAction<boolean>> | null), events: Event[], style: CSSProperties }
+    { events }:
+        { events: Event[] }
 ) => {
-    const editRecord = (record: Event) => {
-        setEventToEdit(record)
-        setIsEditingEvent(true);
+    // const editRecord = (record: Event) => {
+    //     setEventToEdit(record)
+    //     setIsEditingEvent(true);
 
-    }
+    // }
 
     const renderDatePicker = (value: Date) => <DatePicker width="5rem" disabled={true} value={dayjs(value)} />
 
     return (
         <Table
             virtual
-            scroll={{ x: 2500, y: 2000 }}
-            style={style}
+            scroll={{ x: 3500, y: 800 }}
+            // style={style}
             dataSource={events}
             rowKey="id"
             pagination={{
-                defaultPageSize: 10,
-                pageSize: 10,
+                defaultPageSize: 7,
+                pageSize: 7,
                 position: ["bottomLeft"]
             }}
         >
             <Column fixed="left" title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" />
-            <Column title={<span className="SearchResults_Headers">Conference</span>} dataIndex='conference' align="center" />
             <Column title={<span className="SearchResults_Headers">Event Title</span>} dataIndex='title' align="center" render={(_: string, record: Event) => <Button type='link' href={record.event_url}>{record.title}</Button>} />
             <Column title={<span className="SearchResults_Headers">Location</span>} dataIndex='location' align="center" />
             <Column title={<span className="SearchResults_Headers">Categories</span>} dataIndex='categories' align="center" />
@@ -53,7 +51,7 @@ const TimeTable = (
                 align="center"
                 render={(_: string, record: Event) =>
                     <Tooltip title="Edit">
-                        <Button type="default" shape="circle" onClick={() => editRecord(record)} icon={<EditOutlined />} />
+                        <Button type="default" shape="circle"icon={<EditOutlined />} />
                     </Tooltip>
                 } />
         </Table>

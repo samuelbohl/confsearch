@@ -64,7 +64,10 @@
 	display: flex;
 	margin: 1rem;
 	gap: 2rem;
+	/* width: 100%; */
 	min-height: calc(100% - 2 * 1rem);
+	max-height: calc(100% - 2 * 2rem);
+	max-width: calc(100% - 2 * 4rem);
 }
 
 /* .SearchResults_Headers {
