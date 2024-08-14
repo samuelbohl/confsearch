@@ -1,9 +1,8 @@
-import { DownOutlined, EditOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { AiOutlineCheckSquare, AiOutlineClockCircle, AiOutlineFileDone, AiOutlineFilter, AiOutlineNotification, AiOutlinePlayCircle, AiOutlineStop, AiOutlineVideoCamera } from "react-icons/ai";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { AiOutlineCheckSquare, AiOutlineClockCircle, AiOutlineFileDone, AiOutlineNotification, AiOutlinePlayCircle, AiOutlineStop, AiOutlineVideoCamera } from "react-icons/ai";
 import NavBar from "../Components/NavBar";
 import SearchBar from "../Components/SearchBar";
-import { Table, Button, Tooltip, Switch, Dropdown, Space, MenuProps } from "antd";
-// import dataSource from "../MockData/Conferences";
+import { Table, Button, Tooltip } from "antd";
 import { useContext, useEffect } from "react";
 import { Context } from "../Context/Context";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
@@ -11,7 +10,7 @@ import { Conference, ConferenceWithEvents, Event } from "../Services";
 import { useQuery } from "@tanstack/react-query";
 import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth } from "../Utils/utils";
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 const SearchResults = () => {
 
@@ -27,7 +26,7 @@ const SearchResults = () => {
         return await appClient.default.getApiV1Search(params)
     }
 
-    const { data: results, refetch: refetch, isLoading: loading, isRefetching } = useQuery({
+    const { data: results, refetch: refetch, isLoading: loading } = useQuery({
         queryKey: ["search"],
         queryFn: (searchConferences)
     });
@@ -97,7 +96,7 @@ const SearchResults = () => {
         // Build start icon
         const startIcon = (
             <Tooltip title={<span>Start Date: {start.toDateString()}</span>}>
-                <AiOutlinePlayCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isStartAfter ? "" : "var(--invalid_color)" }} />
+                <AiOutlinePlayCircle className="Timetable_Icon" style={{ color: isStartAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
@@ -106,7 +105,7 @@ const SearchResults = () => {
             <Tooltip title={<span>End Date: {end.toDateString()}</span>}>
                 <AiOutlineStop
                     className="Timetable_Icon"
-                    style={{ fontSize: "2em", color: isEndAfter ? "" : "var(--invalid_color)" }}
+                    style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
                 />
             </Tooltip>
         );
@@ -116,7 +115,7 @@ const SearchResults = () => {
             <Tooltip title={<span>Notification Date: {notificationDue.toDateString()}</span>}>
                 <AiOutlineNotification
                     className="Timetable_Icon"
-                    style={{ fontSize: "2em", color: isNotificationAfter ? "" : "var(--invalid_color)" }}
+                    style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
                 />
             </Tooltip>
         );
@@ -124,28 +123,28 @@ const SearchResults = () => {
         // Build deadline icon
         const deadlineIcon = (
             <Tooltip title={<span>Deadline Date: {finalDue.toDateString()}</span>}>
-                <AiOutlineClockCircle className="Timetable_Icon" style={{ fontSize: "2em", color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
+                <AiOutlineClockCircle className="Timetable_Icon" style={{ color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build paper submission icon
         const paperIcon = (
             <Tooltip title={<span>Paper Submission Date: {paperSubmission.toDateString()}</span>}>
-                <AiOutlineFileDone className="Timetable_Icon" style={{ fontSize: "2em", color: isPaperAfter ? "" : "var(--invalid_color)" }} />
+                <AiOutlineFileDone className="Timetable_Icon" style={{ color: isPaperAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build camera ready icon
         const cameraReadyIcon = (
             <Tooltip title={<span>Camera Ready Date: {cameraReady.toDateString()}</span>}>
-                <AiOutlineVideoCamera className="Timetable_Icon" style={{ fontSize: "2em", color: isCameraAfter ? "" : "var(--invalid_color)" }} />
+                <AiOutlineVideoCamera className="Timetable_Icon" style={{ color: isCameraAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build abstract ready icon
         const abstractIcon = (
             <Tooltip title={<span>Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
-                <AiOutlineCheckSquare className="Timetable_Icon" style={{ fontSize: "2em", color: isAbstractAfter ? "" : "var(--invalid_color)" }} />
+                <AiOutlineCheckSquare className="Timetable_Icon" style={{ color: isAbstractAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
@@ -184,12 +183,6 @@ const SearchResults = () => {
         )
     }
 
-    // Edit Functions
-    const onEditRow = (record: Conference) => {
-        // setConferenceToEdit(record)
-        navigate("/edit");
-    }
-
     const viewDetails = (record: Conference) => {
         navigate({
             pathname: "/details",
@@ -210,63 +203,47 @@ const SearchResults = () => {
     //     },
     // ]
 
+
     return (
         <NavBar>
             <div className="SearchResults_Body">
                 <SearchBar />
 
                 <div style={{ width: "100%" }}>
-                    {/* <div style={{ display: "flex", justifyContent: "flex-end", paddingBottom: "10px" }}>
-                        <Dropdown menu={{ filterItems }} trigger={['click']}>
-                            <a style={{ fontSize: "16px", display: "flex", alignItems: "center" }} onClick={(e) => e.preventDefault()}>
-                                <Space>
-                                    <AiOutlineFilter style={{ display: "block", margin: "auto" }} />
-                                    Filters
-                                </Space>
-                            </a>
-                        </Dropdown>
-                    </div> */}
 
-                    <Table style={{ width: "100vw" }}
+                    <Table style={{ width: "100vw", height: "100%" }}
                         pagination={{
                             defaultPageSize: 10,
                             pageSize: 10,
                             position: ["bottomLeft"]
                         }}
-                        dataSource={results?.map((res, index)=> ({...res, key: index}))}
+                        dataSource={results?.map((res, index) => ({ ...res, key: index }))}
                         loading={loading}
+                    // rowKey="id"
+                    // sticky={true}
+                    // scroll={{ y: 40 }}
                     >
                         <Column dataIndex='key' hidden={true} key='id' />
 
-                        <ColumnGroup title={<span className="SearchResults_Headers">Actions</span>}>
+                        <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "1.5em", cursor: "pointer" }} />} />
 
-                            <Column align="center" render={(_, conference: Conference) => <EditOutlined onClick={() => { onEditRow(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
-                            <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "2em", cursor: "pointer" }} />} />
-                            {/* <Column align="center" render={() => <CalendarOutlined style={{ fontSize: "2em", cursor: "pointer" }} />} /> */}
+                        <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
+                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
+                        <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfp_url}>See on Wikicfp</Button>} />
+                        <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
 
-                        </ColumnGroup>
-
-                        <ColumnGroup title={<span className="SearchResults_Headers">Information</span>}>
-                            <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
-                            <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
-                            <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
-                            <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfp_url}>See on Wikicfp</Button>} />
-                        </ColumnGroup>
-
-                        <ColumnGroup title={<span className="SearchResults_Headers">Timetable</span>} dataIndex='' align="center" width='55%'>
-                            {
-                                get12MonthsAhead()
-                                    .map((month, index) =>
-                                        <Column
-                                            key={index}
-                                            className="Timetable_Column"
-                                            title={<span className="SearchResults_Headers">{month}</span>}
-                                            align="center"
-                                            render={(_: string, record: Conference) => renderTimeTableCell(month, record)}
-                                        />
-                                    )
-                            }
-                        </ColumnGroup>
+                        {
+                            get12MonthsAhead()
+                                .map((month, index) =>
+                                    <Column
+                                        key={index}
+                                        className="Timetable_Column"
+                                        title={<span className="SearchResults_Headers">{month}</span>}
+                                        align="center"
+                                        render={(_: string, record: Conference) => renderTimeTableCell(month, record)}
+                                    />
+                                )
+                        }
                     </Table>
                 </div>
             </div>

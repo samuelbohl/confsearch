@@ -1,6 +1,6 @@
-import { Button, Calendar, Col, Descriptions, DescriptionsProps, Row, StepProps, Steps } from "antd";
+import { Button, Calendar, Col, Descriptions, DescriptionsProps, Row, Space, StepProps, Steps } from "antd";
 import { EventWithTracks } from "../../Services";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 const EventHistory = ({ event }: { event: EventWithTracks }) => {
 
@@ -8,7 +8,7 @@ const EventHistory = ({ event }: { event: EventWithTracks }) => {
     const [steps, setSteps] = useState<StepProps[]>([]);
 
     useEffect(() => {
-        const result = generateEventSteps(); 
+        const result = generateEventSteps();
 
         // Set current step
         const currentDate = new Date();
@@ -139,37 +139,42 @@ const EventHistory = ({ event }: { event: EventWithTracks }) => {
         return result
     }
 
+    const cellStyle: CSSProperties = { backgroundColor: "#ffffff", padding: "0.5rem" }
     return (
-        <Row
-            style={{
-                // overflowY: "scroll",
-                // backgroundColor: "#ffffff",
-                maxHeight: "100%"
-            }}
-        >
+
+        <Row gutter={[16, 0]}>
             <Col span={12}>
-                <div style={{ backgroundColor: "#ffffff", padding: "1rem", margin: "1rem 0.5rem" }}>
-                    <Descriptions
-                        bordered
-                        title="Event Information"
-                        items={descriptions}
-                    />
-                </div>
+                <Space direction="vertical" size="middle">
+                    <Row>
+                        <Col>
+                            <div style={cellStyle}>
+                                <Descriptions
+                                    bordered
+                                    title="Event Information"
+                                    items={descriptions}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <div style={cellStyle}>
 
-                <div style={{ backgroundColor: "#ffffff", padding: "1rem", margin: "1rem 0.5rem" }}>
-                    <Descriptions title="Event Steps" />
-                    <Steps
-                        progressDot
-                        current={currentStep}
-                        items={steps}
-                    />
-                </div>
+                                <Descriptions title="Event Steps" />
+                                <Steps
+                                    progressDot
+                                    current={currentStep}
+                                    items={steps}
+                                />
+                            </div>
+                        </Col>
 
-
+                    </Row>
+                </Space>
             </Col>
             <Col span={12}>
-                <div style={{ backgroundColor: "#ffffff", padding: "1rem", margin: "1rem 0.5rem" }}>
-                    <Descriptions title="Event Timetable" />
+                <div style={cellStyle}>
+                    <Descriptions title="Event Track" />
                     <Calendar />
                 </div>
             </Col>

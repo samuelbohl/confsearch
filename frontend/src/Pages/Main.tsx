@@ -23,23 +23,23 @@ const MainPage = () => {
 
                 <div style={{
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    // flexDirection: "column",
+                    // alignItems: "center",
+                    justifyContent: "space-around",
                     width: "100%"
                 }}>
 
+                    <SearchSuggestions />
                     <Tips />
 
-                    <div style={{
+                    {/* <div style={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         width: "100%"
-                    }}>
-                        <SearchSuggestions />
-                        <Actions />
-                    </div>
+                    }}> */}
+                        {/* <Actions /> */}
+                    {/* </div> */}
                 </div>
             </div>
 
