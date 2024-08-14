@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger deployment
+        env:
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           curl -X POST \
-            -H "Authorization: Basic ${{ secrets.DEPLOY_BASIC_AUTH }}" \
-            ${{ secrets.DEPLOY_URL }}
+            -H "Authorization: Bearer $DEPLOY_TOKEN" \
+            "$DEPLOY_URL"
