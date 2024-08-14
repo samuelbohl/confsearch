@@ -1,10 +1,8 @@
 FROM nginx:alpine
 
 # Install Lua module for Nginx
-RUN apk update && apk add --no-cache \
-    nginx-mod-http-lua
-
-RUN apk add --no-cache apache2-utils
+RUN apk update && apk add --no-cache nginx-mod-http-lua apache2-utils
+RUN apk add --no-cache pcre-dev openssl-dev
 
 # Set working directory
 WORKDIR /etc/nginx
