@@ -1,5 +1,5 @@
 import { Layout, theme, Image } from 'antd';
-import Logo from '../Components/Logo';
+import Logo from './Logo';
 
 const { Header, Content, Footer } = Layout;
 
@@ -18,8 +18,8 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
             </Header>
 
             <Content style={{
-                padding: '1rem',
-                background: "var(--white)"
+                background: "var(--white)",
+                overflowY: "auto"
             }}>
                 {children}
             </Content>

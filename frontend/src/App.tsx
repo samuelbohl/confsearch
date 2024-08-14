@@ -1,5 +1,4 @@
 import './App.css'
-import './App_Mobile.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -8,7 +7,6 @@ import { ConfigProvider } from 'antd';
 import MainPage from './Pages/Main';
 import SearchResults from './Pages/SearchResults';
 import ErrorPage from './Pages/Error';
-import EditConference from './Pages/EditConference';
 import ViewConference from './Pages/ViewConference';
 
 const queryClient = new QueryClient();
@@ -23,11 +21,6 @@ function App() {
 		{
 			path: "/search",
 			element: <SearchResults />,
-			errorElement: <ErrorPage />,
-		},
-		{
-			path: "/edit",
-			element: <EditConference />,
 			errorElement: <ErrorPage />,
 		},
 		{
