@@ -1,13 +1,8 @@
-FROM nginx:latest
+FROM nginx:alpine
 
-# Install necessary tools and Lua module
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    docker.io \
-    apache2-utils \
-    libnginx-mod-http-lua \
-    && rm -rf /var/lib/apt/lists/*
+# Install Lua module for Nginx
+RUN apk update && apk add --no-cache \
+    nginx-mod-http-lua
 
 # Set working directory
 WORKDIR /etc/nginx
