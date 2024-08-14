@@ -17,7 +17,8 @@
     "paths": {
       "@api/*": ["src/*"]
     },
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noEmitOnError": false
   },
   "exclude": ["node_modules", "./dist/**/*"]
 }
