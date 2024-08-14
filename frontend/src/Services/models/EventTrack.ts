@@ -4,13 +4,14 @@
 /* eslint-disable */
 export type EventTrack = {
     id?: number;
-    event_id?: number;
+    eventId?: number;
     name?: string;
     description?: string;
-    paper_submission?: string;
-    abstract_submission?: string;
-    notification_due?: string;
-    camera_ready_due?: string;
-    deadlines_note?: string;
+    paperSubmission?: string;
+    abstractSubmission?: string;
+    notificationDue?: string;
+    cameraReadyDue?: string;
+    deadlinesNote?: string;
+    isWorkshop?: boolean;
 };
 

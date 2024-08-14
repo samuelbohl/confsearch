@@ -6,9 +6,9 @@ export type Conference = {
     id?: number;
     title?: string;
     acronym?: string;
-    core_rank?: string;
-    rank_source?: string;
-    wikicfp_url?: string;
+    coreRank?: string;
+    rankSource?: string;
+    wikicfpUrl?: string;
     website?: string;
 };
 
