@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 import { cleanUpEventName, completeURL } from "@api/services/wikicfp/utils";
-import { getAStarConferences } from "@api/services/conferences";
+import { getAStarConferences } from "@api/services/conferences/conferences";
 
 type WikiCFPEvent = {
   eventAcronym: string;

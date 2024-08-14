@@ -1,58 +1,42 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Confsearch API
-  version: 1.0.0
+  version: 1.0.3
 
 paths:
   /api/v1/search:
     get:
       summary: Search for conferences
       parameters:
-        - name: keyword
+        - name: query
           in: query
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: List of conferences
+          description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Conference'
+                $ref: '#/components/schemas/ConferenceListResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
 
   /api/v1/events:
     get:
       summary: Get all events
       responses:
         '200':
-          description: List of events
+          description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventWithTracks'
+                $ref: '#/components/schemas/EventWithTracksListResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
     post:
       summary: Create a new event
       requestBody:
@@ -67,19 +51,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventWithTracks'
+                $ref: '#/components/schemas/EventWithTracksResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
 
   /api/v1/events/{eventId}:
     get:
@@ -92,23 +68,15 @@ paths:
             type: integer
       responses:
         '200':
-          description: Event details
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventWithTracks'
+                $ref: '#/components/schemas/EventWithTracksResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
     put:
       summary: Update an event
       parameters:
@@ -125,23 +93,15 @@ paths:
               $ref: '#/components/schemas/EventWithTracks'
       responses:
         '200':
-          description: Event updated
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventWithTracks'
+                $ref: '#/components/schemas/EventWithTracksResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
     delete:
       summary: Delete an event
       parameters:
@@ -151,39 +111,29 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
-          description: Event deleted
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
 
   /api/v1/conferences:
     get:
       summary: Get all conferences with their associated events
       responses:
         '200':
-          description: List of conferences with events
+          description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ConferenceWithEvents'
+                $ref: '#/components/schemas/ConferenceWithEventsListResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
     post:
       summary: Create a new conference
       requestBody:
@@ -198,13 +148,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Conference'
+                $ref: '#/components/schemas/ConferenceResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
 
   /api/v1/conferences/{conferenceId}:
     get:
@@ -217,23 +163,15 @@ paths:
             type: integer
       responses:
         '200':
-          description: Conference details with events and event tracks
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConferenceWithEventsAndTracks'
+                $ref: '#/components/schemas/ConferenceWithEventsAndTracksResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
     put:
       summary: Update a conference
       parameters:
@@ -250,23 +188,15 @@ paths:
               $ref: '#/components/schemas/Conference'
       responses:
         '200':
-          description: Conference updated
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Conference'
+                $ref: '#/components/schemas/ConferenceResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
     delete:
       summary: Delete a conference
       parameters:
@@ -276,23 +206,94 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
-          description: Conference deleted
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/NotFound'
 
 components:
   schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        data:
+          type: object
+        error:
+          type: 'null'
+
+    ConferenceResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Conference'
+        error:
+          type: 'null'
+
+    ConferenceListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conference'
+        error:
+          type: 'null'
+
+    EventWithTracksResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/EventWithTracks'
+        error:
+          type: 'null'
+
+    EventWithTracksListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventWithTracks'
+        error:
+          type: 'null'
+
+    ConferenceWithEventsListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConferenceWithEvents'
+        error:
+          type: 'null'
+
+    ConferenceWithEventsAndTracksResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ConferenceWithEventsAndTracks'
+        error:
+          type: 'null'
+
+    ErrorResponse:
+      type: object
+      properties:
+        data:
+          type: 'null'
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: integer
+
     Conference:
       type: object
       properties:
@@ -302,11 +303,11 @@ components:
           type: string
         acronym:
           type: string
-        core_rank:
+        coreRank:
           type: string
-        rank_source:
+        rankSource:
           type: string
-        wikicfp_url:
+        wikicfpUrl:
           type: string
         website:
           type: string
@@ -320,7 +321,9 @@ components:
           type: string
         conference:
           type: string
-        acronym:
+        conferenceAcronym:
+          type: string
+        eventAcronym:
           type: string
         start:
           type: string
@@ -338,58 +341,63 @@ components:
             type: string
         description:
           type: string
-        paper_submission:
+        paperSubmission:
           type: string
           format: date-time
-        abstract_submission:
+        abstractSubmission:
           type: string
-          format: date-time
-        notification_due:
+          format: date
+        notificationDue:
           type: string
-          format: date-time
-        final_due:
+          format: date
+        finalDue:
           type: string
-          format: date-time
-        camera_ready:
+          format: date
+        cameraReady:
           type: string
-          format: date-time
-        deadline_notes:
+          format: date
+        deadlineNotes:
           type: string
-        wikicfp_url:
+        wikicfpUrl:
           type: string
-        event_url:
+        eventUrl:
           type: string
-        submission_url:
+        submissionUrl:
           type: string
         location:
           type: string
+        updatedAt:
+          type: string
+          format: date-time
 
     EventTrack:
       type: object
       properties:
         id:
           type: integer
-        event_id:
+        eventId:
           type: integer
         name:
           type: string
         description:
           type: string
-        paper_submission:
+        paperSubmission:
           type: string
-          format: date-time
-        abstract_submission:
+          format: date
+        abstractSubmission:
           type: string
-          format: date-time
-        notification_due:
+          format: date
+        notificationDue:
           type: string
-          format: date-time
-        camera_ready_due:
+          format: date
+        cameraReadyDue:
           type: string
-          format: date-time
-        deadlines_note:
+          format: date
+        deadlinesNote:
           type: string
-          
+        isWorkshop:
+          type: boolean
+
     EventWithTracks:
       type: object
       allOf:
@@ -431,10 +439,16 @@ components:
                         items:
                           $ref: '#/components/schemas/EventTrack'
 
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-        code:
-          type: integer
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

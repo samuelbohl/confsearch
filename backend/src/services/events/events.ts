@@ -89,7 +89,7 @@ export async function addNewEvent(newEventRequestBody: any) {
   try {
     const parsedRequest = createEventSchema.parse(newEventRequestBody);
     const res = await db.insert(events).values(parsedRequest).returning();
-    return res[0]?.id;
+    return res[0];
   } catch (error) {
     if (error instanceof ZodError) {
       return {
@@ -109,7 +109,22 @@ export async function addNewEvent(newEventRequestBody: any) {
 export async function updateEvent(eventId: number, updateEventRequestBody: any) {
   try {
     const parsedRequest = createEventSchema.parse(updateEventRequestBody);
-    return await db.update(events).set(parsedRequest).where(eq(events.id, eventId));
+    const { tracks, ...eventRequest } = parsedRequest;
+    return await db.transaction(async (tx) => {
+      const res = await tx.update(events).set(eventRequest).where(eq(events.id, eventId)).returning();
+      if (!res || res.length === 0) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      for (const track of tracks) {
+        await tx.insert(eventTrack).values({
+          eventId: Number(res[0]!.id),
+          ...track,
+        });
+      }
+
+      return res[0];
+    });
   } catch (error) {
     if (error instanceof ZodError) {
       return {

@@ -1,5 +1,5 @@
 import { initDb } from "@api/db";
-import { eventsRoutes, searchRoutes } from "@api/routes";
+import { conferencesRoutes, eventsRoutes, searchRoutes } from "@api/routes";
 import { env, Logger } from "@api/utils";
 import fastify from "fastify";
 import { middleware } from "./modules/middleware";
@@ -30,6 +30,9 @@ export const main = async () => {
   });
   server.register(eventsRoutes, {
     prefix: `/api/${API_VERSION}/events`,
+  });
+  server.register(conferencesRoutes, {
+    prefix: `/api/${API_VERSION}/conferences`,
   });
   server.register(healthCheckRoutes, {
     prefix: `/api/${API_VERSION}/health`,

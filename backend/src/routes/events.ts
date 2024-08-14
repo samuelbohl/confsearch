@@ -1,72 +1,115 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { Logger } from "@api/utils";
-import {
-  addNewEvent,
-  deleteEventById,
-  getAllConferenceEvents,
-  getEventById,
-  updateEvent,
-} from "@api/services/events/events";
+import { addNewEvent, getAllConferenceEvents, getEventById, updateEvent } from "@api/services/events/events";
 
 export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => void) => {
-  fastify.get("/", async (request: FastifyRequest<{ Querystring: Record<string, string> }>, response) => {
+  fastify.get("/", async (request, response) => {
     Logger.info("GET", request.url);
 
-    const result = await getAllConferenceEvents();
-    response.send({
-      result,
-    });
+    try {
+      const result = await getAllConferenceEvents();
+      response.send({
+        data: result,
+      });
+    } catch (error: Error | any) {
+      response.status(400).send({
+        error: {
+          message: "Error getting events",
+          details: error?.message,
+        },
+      });
+    }
   });
 
   fastify.post("/", async (request, response) => {
     Logger.info("POST", request.url);
-    const result = await addNewEvent(request.body);
 
-    if (typeof result === "object" && "error" in result) {
-      response.status(400).send(result.error);
+    try {
+      const result = await addNewEvent(request.body);
+      response.send({
+        data: result,
+      });
+    } catch (error: Error | any) {
+      response.status(400).send({
+        error: {
+          message: "Error adding event",
+          details: error?.message,
+        },
+      });
+    }
+  });
+
+  fastify.get("/:eventId", async (request: FastifyRequest<{ Params: { eventId: number } }>, response) => {
+    Logger.info("GET", request.url);
+
+    if (!("eventId" in request.params)) {
+      response.status(400).send({
+        error: {
+          message: "Missing eventId parameter",
+        },
+      });
       return;
     }
 
-    response.send({
-      success: true,
-    });
+    try {
+      const result = await getEventById(request.params.eventId);
+      response.send({
+        data: result,
+      });
+    } catch (error: Error | any) {
+      response.status(400).send({
+        error: {
+          message: "Error getting event",
+          details: error?.message,
+        },
+      });
+    }
   });
 
-  fastify.get("/:eventId", async (request: FastifyRequest<{ Params: { eventId: string } }>, response) => {
-    Logger.info("GET", request.url);
-    const eventId = parseInt(request.params.eventId);
-    const result = await getEventById(eventId);
-    response.send({
-      result,
-    });
-  });
-
-  fastify.put("/:eventId", async (request: FastifyRequest<{ Params: { eventId: string } }>, response) => {
+  fastify.put("/:eventId", async (request: FastifyRequest<{ Params: { eventId: number } }>, response) => {
     Logger.info("PUT", request.url);
-    const eventId = parseInt(request.params.eventId);
-    const result = await updateEvent(eventId, request.body);
-
-    if ("error" in result) {
-      response.status(400).send(result.error);
+    if (!("eventId" in request.params)) {
+      response.status(400).send({
+        error: {
+          message: "Missing eventId parameter",
+        },
+      });
+      return;
     }
 
-    response.send({
-      success: true,
-    });
+    try {
+      const result = await updateEvent(request.params.eventId, request.body);
+      response.send({
+        data: result,
+      });
+    } catch (error: Error | any) {
+      response.status(400).send({
+        error: {
+          message: "Error updating event",
+          details: error?.message,
+        },
+      });
+    }
   });
 
   fastify.delete("/:eventId", async (request: FastifyRequest<{ Params: { eventId: string } }>, response) => {
     Logger.info("DELETE", request.url);
-    const eventId = parseInt(request.params.eventId);
-    const result = await deleteEventById(eventId);
 
-    if ("error" in result) {
-      response.status(400).send(result.error);
+    if (!("eventId" in request.params)) {
+      response.status(400).send({
+        error: {
+          message: "Missing eventId parameter",
+        },
+      });
       return;
     }
 
+    // TODO MAYBE ADD THIS LATER, BUT SKIP THIS BECAUSE OF POTENTIAL ABUSE
+
     response.send({
-      success: true,
+      data: {
+        success: true,
+      },
     });
   });
 
