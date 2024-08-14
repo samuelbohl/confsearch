@@ -1,8 +1,10 @@
 import { initDb } from "@api/db";
-import { eventsRoutes, searchRoutes, testRoutes } from "@api/routes";
-import { env, Logger, Redis } from "@api/utils";
+import { eventsRoutes, searchRoutes } from "@api/routes";
+import { env, Logger } from "@api/utils";
 import fastify from "fastify";
 import { middleware } from "./modules/middleware";
+import { healthCheckRoutes } from "@api/routes/healthcheck";
+import { updateCoreRanking, updateWikiCFPSeries } from "@api/cron";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const API_VERSION = "v1";
@@ -14,7 +16,6 @@ export const main = async () => {
   });
 
   await initDb();
-  await Redis.initialize();
 
   server.register(middleware);
   server.register(import("@fastify/cors"), {
@@ -24,14 +25,14 @@ export const main = async () => {
   });
 
   // Routes
-  server.register(testRoutes, {
-    prefix: `/api/${API_VERSION}/test`,
-  });
   server.register(searchRoutes, {
-    prefix: `/api//${API_VERSION}/search`,
+    prefix: `/api/${API_VERSION}/search`,
   });
   server.register(eventsRoutes, {
     prefix: `/api/${API_VERSION}/events`,
+  });
+  server.register(healthCheckRoutes, {
+    prefix: `/api/${API_VERSION}/health`,
   });
 
   server.listen({ host: env.HOST, port: env.PORT }, (error, address) => {
@@ -42,6 +43,10 @@ export const main = async () => {
 
     Logger.info("INIT", `Server listening at ${address}`);
   });
+
+  // CRON JOBS
+  updateCoreRanking.start();
+  updateWikiCFPSeries.start();
 
   return server;
 };

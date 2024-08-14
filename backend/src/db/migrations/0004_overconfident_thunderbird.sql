@@ -1,0 +1,1 @@
+ALTER TABLE "events" ALTER COLUMN "notification_due" SET DATA TYPE text;

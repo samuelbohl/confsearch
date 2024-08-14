@@ -18,6 +18,8 @@ const CORECsvSchema = z.object({
   avg_rating: z.string().optional(),
 });
 
+type CoreRankingCSV = z.infer<typeof CORECsvSchema>;
+
 export async function getCORERanking() {
   const url = "https://portal.core.edu.au/conf-ranks/";
   const params = {
@@ -57,8 +59,7 @@ export async function getCORERanking() {
   return results;
 }
 
-export async function upsertCoreRankings() {
-  const rankings = await getCORERanking();
+export async function upsertCoreRankings(rankings: CoreRankingCSV[]) {
   for (const ranking of rankings) {
     await db
       .insert(conferences)
