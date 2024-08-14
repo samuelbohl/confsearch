@@ -1,0 +1,16 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        run: |
+          curl -X POST \
+            -H "Authorization: Basic ${{ secrets.DEPLOY_BASIC_AUTH }}" \
+            https://yourdomain.com/deploy
