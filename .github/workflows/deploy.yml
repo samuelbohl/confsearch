@@ -13,4 +13,4 @@ jobs:
         run: |
           curl -X POST \
             -H "Authorization: Basic ${{ secrets.DEPLOY_BASIC_AUTH }}" \
-            https://yourdomain.com/deploy
+            ${{ secrets.DEPLOY_URL }}
