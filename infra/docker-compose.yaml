@@ -9,10 +9,11 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./deployment.sh:/usr/local/bin/deployment.sh
     environment:
       - DEPLOY_USER=${DEPLOY_USER}
       - DEPLOY_PASS=${DEPLOY_PASS}
-    command: sh -c "htpasswd -bc /etc/nginx/auth/.htpasswd $${DEPLOY_USER} $${DEPLOY_PASS} && nginx -g 'daemon off;'"
+    command: sh -c "htpasswd -bc /etc/nginx/auth/.htpasswd $${DEPLOY_USER} $${DEPLOY_PASS} && chmod +x /usr/local/bin/deployment.sh && nginx -g 'daemon off;'"
     depends_on:
       - app
     networks:
