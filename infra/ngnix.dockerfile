@@ -4,7 +4,7 @@ FROM nginx:alpine
 RUN apk update && apk add --no-cache \
     nginx-mod-http-lua
 
-RUN apk install -y apache2-utils
+RUN apk add --no-cache apache2-utils
 
 # Set working directory
 WORKDIR /etc/nginx
