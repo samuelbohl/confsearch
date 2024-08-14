@@ -1,0 +1,283 @@
+{
+  "id": "7372746a-9970-4591-ba81-0d69860e0670",
+  "prevId": "b11f3afc-c6a7-4070-8579-f893654bd27c",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.conferences": {
+      "name": "conferences",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acronym": {
+          "name": "acronym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "core_rank": {
+          "name": "core_rank",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rank_source": {
+          "name": "rank_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wikicfp_url": {
+          "name": "wikicfp_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.event_track": {
+      "name": "event_track",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paper_submission": {
+          "name": "paper_submission",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abstract_submission": {
+          "name": "abstract_submission",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notification_due": {
+          "name": "notification_due",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "camera_ready_due": {
+          "name": "camera_ready_due",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deadlines_note": {
+          "name": "deadlines_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_workshop": {
+          "name": "is_workshop",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "event_track_event_id_events_id_fk": {
+          "name": "event_track_event_id_events_id_fk",
+          "tableFrom": "event_track",
+          "tableTo": "events",
+          "columnsFrom": [
+            "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.events": {
+      "name": "events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "conference": {
+          "name": "conference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "conference_acronym": {
+          "name": "conference_acronym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "event_acronym": {
+          "name": "event_acronym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start": {
+          "name": "start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end": {
+          "name": "end",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categories": {
+          "name": "categories",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "tags": {
+          "name": "tags",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "ARRAY[]::text[]"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paper_submission": {
+          "name": "paper_submission",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "abstract_submission": {
+          "name": "abstract_submission",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notification_due": {
+          "name": "notification_due",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "final_due": {
+          "name": "final_due",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "camera_ready": {
+          "name": "camera_ready",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deadline_notes": {
+          "name": "deadline_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wikicfp_url": {
+          "name": "wikicfp_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "event_url": {
+          "name": "event_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "submission_url": {
+          "name": "submission_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

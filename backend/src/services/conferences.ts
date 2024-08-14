@@ -5,3 +5,7 @@ import { db } from "@api/db";
 export async function getAStarConferences() {
   return db.select().from(conferences).where(eq(conferences.coreRank, "A*"));
 }
+
+export async function getAllConferences() {
+  return db.select().from(conferences);
+}

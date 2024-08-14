@@ -1,4 +1,4 @@
-import { pgTable, serial, text, date, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 // Conferences Table
@@ -19,8 +19,8 @@ export const events = pgTable("events", {
   conference: text("conference"),
   conferenceAcronym: text("conference_acronym"),
   eventAcronym: text("event_acronym"),
-  start: date("start"),
-  end: date("end"),
+  start: text("start"),
+  end: text("end"),
   categories: text("categories")
     .array()
     .default(sql`ARRAY[]::text[]`)
@@ -30,16 +30,17 @@ export const events = pgTable("events", {
     .default(sql`ARRAY[]::text[]`)
     .notNull(),
   description: text("description"),
-  paperSubmission: timestamp("paper_submission", { withTimezone: false }),
-  abstractSubmission: timestamp("abstract_submission", { withTimezone: false }),
-  notificationDue: timestamp("notification_due", { withTimezone: false }),
-  finalDue: timestamp("final_due", { withTimezone: false }),
-  cameraReady: timestamp("camera_ready", { withTimezone: false }),
+  paperSubmission: text("paper_submission"),
+  abstractSubmission: text("abstract_submission"),
+  notificationDue: text("notification_due"),
+  finalDue: text("final_due"),
+  cameraReady: text("camera_ready"),
   deadlineNotes: text("deadline_notes"),
   wikicfpUrl: text("wikicfp_url"),
   eventUrl: text("event_url"),
   submissionUrl: text("submission_url"),
   location: text("location"),
+  updatedAt: timestamp("updated_at"),
 });
 
 // EventTrack Table
@@ -48,9 +49,10 @@ export const eventTrack = pgTable("event_track", {
   eventId: serial("event_id").references(() => events.id, { onUpdate: "cascade", onDelete: "set null" }),
   name: text("name"),
   description: text("description"),
-  paperSubmission: timestamp("paper_submission", { withTimezone: false }),
-  abstractSubmission: timestamp("abstract_submission", { withTimezone: false }),
-  notificationDue: timestamp("notification_due", { withTimezone: false }),
-  cameraReadyDue: timestamp("camera_ready_due", { withTimezone: false }),
+  paperSubmission: text("paper_submission"),
+  abstractSubmission: text("abstract_submission"),
+  notificationDue: text("notification_due"),
+  cameraReadyDue: text("camera_ready_due"),
   deadlinesNote: text("deadlines_note"),
+  isWorkshop: boolean("is_workshop"),
 });

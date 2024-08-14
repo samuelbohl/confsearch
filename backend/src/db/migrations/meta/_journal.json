@@ -15,6 +15,34 @@
       "when": 1721813707246,
       "tag": "0001_old_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1723195336947,
+      "tag": "0002_violet_maddog",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1723196806664,
+      "tag": "0003_sticky_night_thrasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1723197432679,
+      "tag": "0004_overconfident_thunderbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1723554826848,
+      "tag": "0005_illegal_raza",
+      "breakpoints": true
     }
   ]
 }
