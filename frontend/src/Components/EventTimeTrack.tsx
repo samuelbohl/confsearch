@@ -22,15 +22,16 @@ const EventTimeTrack = ({ event }: { event: Event }) => {
         }
 
         setSteps(result.map(item => ({ title: item.title, description: item.description })))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const generateEventSteps = (event: Event) => {
         const eventDates: { [id: string]: Date } = {
-            paper_submission: new Date(event.paper_submission ?? ""),
-            abstract_submission: new Date(event.abstract_submission ?? ""),
-            notification_due: new Date(event.notification_due ?? ""),
-            final_due: new Date(event.final_due ?? ""),
-            camera_ready: new Date(event.camera_ready ?? ""),
+            paper_submission: new Date(event.paperSubmission ?? ""),
+            abstract_submission: new Date(event.abstractSubmission ?? ""),
+            notification_due: new Date(event.notificationDue ?? ""),
+            final_due: new Date(event.finalDue ?? ""),
+            camera_ready: new Date(event.cameraReady ?? ""),
             start: new Date(event.start ?? ""),
             end: new Date(event.end ?? ""),
         }
