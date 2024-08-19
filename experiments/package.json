@@ -1,0 +1,22 @@
+{
+  "name": "experiments",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "accurcy": "node accuracy.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.4",
+    "cheerio": "^1.0.0",
+    "csv-parse": "^5.5.6",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "openai": "^4.56.0",
+    "zod": "^3.23.8"
+  }
+}
