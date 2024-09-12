@@ -1,11 +1,11 @@
-import { InferSelectModel, sql } from "drizzle-orm";
-import { events } from "@api/db/schemas";
+import { inArray, InferSelectModel, sql } from "drizzle-orm";
+import { conferences, events } from "@api/db/schemas";
 import { db } from "@api/db";
 import { Logger } from "@api/utils";
 
-type SelectEvents = InferSelectModel<typeof events>;
+type SelectConferences = InferSelectModel<typeof conferences>;
 
-export async function searchEvents(query: string): Promise<SelectEvents[]> {
+export async function searchEvents(query: string): Promise<SelectConferences[]> {
   const results = await db
     .select()
     .from(events)
@@ -22,6 +22,6 @@ export async function searchEvents(query: string): Promise<SelectEvents[]> {
     );
 
   Logger.info("DEBUG", `Search results length: ${results.length}`);
-
-  return results;
+  const conferenceAcronyms = results.map((result) => result.conferenceAcronym!);
+  return db.select().from(conferences).where(inArray(conferences.acronym, conferenceAcronyms));
 }

@@ -10,9 +10,11 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
       const result = await getAllConferenceEvents();
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Error getting events",
           details: error?.message,
@@ -28,9 +30,11 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
       const result = await addNewEvent(request.body);
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Error adding event",
           details: error?.message,
@@ -44,6 +48,7 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
 
     if (!("eventId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing eventId parameter",
         },
@@ -55,9 +60,11 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
       const result = await getEventById(request.params.eventId);
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Error getting event",
           details: error?.message,
@@ -70,6 +77,7 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
     Logger.info("PUT", request.url);
     if (!("eventId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing eventId parameter",
         },
@@ -81,9 +89,11 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
       const result = await updateEvent(request.params.eventId, request.body);
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Error updating event",
           details: error?.message,
@@ -97,6 +107,7 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
 
     if (!("eventId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing eventId parameter",
         },
@@ -110,6 +121,7 @@ export const eventsRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
       data: {
         success: true,
       },
+      error: null,
     });
   });
 
