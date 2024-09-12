@@ -1,7 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { Logger } from "@api/utils";
 import { searchEvents } from "@api/services/search";
-import { httpErrors } from "@fastify/sensible";
 
 export const searchRoutes = (fastify: FastifyInstance, _: unknown, done: () => void) => {
   fastify.get("/", async (request: FastifyRequest<{ Querystring: Record<string, string> }>, response) => {
@@ -10,11 +9,18 @@ export const searchRoutes = (fastify: FastifyInstance, _: unknown, done: () => v
     if ("query" in request.query) {
       const result = await searchEvents(request.query.query);
       response.send({
-        result,
+        data: result,
+        error: null,
+      });
+    } else {
+      response.status(400).send({
+        data: null,
+        error: {
+          message: "Missing query parameter",
+          details: null,
+        },
       });
     }
-
-    response.send(httpErrors.badRequest("Missing query parameter"));
   });
 
   done();

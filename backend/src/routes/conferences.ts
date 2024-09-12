@@ -10,6 +10,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
       const result = await getAllConferences();
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
@@ -25,6 +26,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
     Logger.info("GET", request.url);
     if (!("conferenceId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing conferenceId parameter",
         },
@@ -36,6 +38,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
       const result = await getConferenceById(request.params.conferenceId);
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
@@ -51,6 +54,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
     Logger.info("PUT", request.url);
     if (!("conferenceId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing conferenceId parameter",
         },
@@ -62,9 +66,11 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
       const result = await updateConference(request.params.conferenceId, request.body);
       response.send({
         data: result,
+        error: null,
       });
     } catch (error: Error | any) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Error updating conference",
           details: error?.message,
@@ -77,6 +83,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
     Logger.info("DELETE", request.url);
     if (!("conferenceId" in request.params)) {
       response.status(400).send({
+        data: null,
         error: {
           message: "Missing conferenceId parameter",
         },
@@ -90,6 +97,7 @@ export const conferencesRoutes = (fastify: FastifyInstance, _: unknown, done: ()
       data: {
         success: true,
       },
+      error: null,
     });
   });
 

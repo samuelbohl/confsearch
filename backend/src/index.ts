@@ -4,7 +4,6 @@ import { env, Logger } from "@api/utils";
 import fastify from "fastify";
 import { middleware } from "./modules/middleware";
 import { healthCheckRoutes } from "@api/routes/healthcheck";
-import { updateCoreRanking, updateWikiCFPSeries } from "@api/cron";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const API_VERSION = "v1";
@@ -47,9 +46,9 @@ export const main = async () => {
     Logger.info("INIT", `Server listening at ${address}`);
   });
 
-  // CRON JOBS
-  updateCoreRanking.start();
-  updateWikiCFPSeries.start();
+  // CRON JOBS (skip for now)
+  // updateCoreRanking.start();
+  // updateWikiCFPSeries.start();
 
   return server;
 };
