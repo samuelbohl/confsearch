@@ -234,7 +234,7 @@ const SearchResults = () => {
                         <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
                         <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
                         <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfpUrl}>See on Wikicfp</Button>} />
-                        <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
+                        <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='coreRank' align="center" width='5%' />
 
                         {
                             get12MonthsAhead()
