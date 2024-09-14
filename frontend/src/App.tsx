@@ -7,7 +7,8 @@ import { ConfigProvider } from 'antd';
 import MainPage from './Pages/Main';
 import SearchResults from './Pages/SearchResults';
 import ErrorPage from './Pages/Error';
-import ViewConference from './Pages/ViewConference';
+// import ViewConference from './Pages/ViewConference';
+import ViewConference from './Pages/ViewConference2';
 
 const queryClient = new QueryClient();
 
