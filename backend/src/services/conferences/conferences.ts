@@ -8,20 +8,86 @@ export async function getAStarConferences() {
 }
 
 export async function getAllConferences() {
-  return db
+  const results = await db
     .select()
     .from(conferences)
-    .leftJoin(events, eq(conferences.acronym, events.conference))
+    .leftJoin(events, eq(conferences.acronym, events.conferenceAcronym))
     .leftJoin(eventTrack, eq(events.id, eventTrack.eventId));
+
+  const structuredConferences: any[] = [];
+  const conferenceMap = new Map<number, any>();
+
+  for (const row of results) {
+    if (!row.conferences) continue;
+
+    let conference = conferenceMap.get(row.conferences.id);
+    if (!conference) {
+      conference = {
+        ...row.conferences,
+        events: [],
+      };
+      conferenceMap.set(row.conferences.id, conference);
+      structuredConferences.push(conference);
+    }
+
+    if (row.events) {
+      let event = conference.events.find((e: any) => e.id === row.events!.id);
+      if (!event) {
+        event = {
+          ...row.events,
+          eventTracks: [],
+        };
+        conference.events.push(event);
+      }
+
+      if (row.event_track) {
+        event.eventTracks.push(row.event_track);
+      }
+    }
+  }
+
+  return structuredConferences;
 }
 
 export async function getConferenceById(conferenceId: number) {
-  return db
+  const results = await db
     .select()
     .from(conferences)
-    .leftJoin(events, eq(conferences.acronym, events.conference))
+    .leftJoin(events, eq(conferences.acronym, events.conferenceAcronym))
     .leftJoin(eventTrack, eq(events.id, eventTrack.eventId))
     .where(eq(conferences.id, conferenceId));
+
+  if (results.length === 0) {
+    return null;
+  }
+
+  const structuredConference = {
+    ...results[0]!.conferences!,
+    events: [],
+  };
+
+  const eventMap = new Map<number, any>();
+
+  for (const row of results) {
+    if (row.events) {
+      let event = eventMap.get(row.events.id);
+      if (!event) {
+        event = {
+          ...row.events,
+          eventTracks: [],
+        };
+        eventMap.set(row.events.id, event);
+        // @ts-ignore
+        structuredConference.events.push(event);
+      }
+
+      if (row.event_track) {
+        event.eventTracks.push(row.event_track);
+      }
+    }
+  }
+
+  return structuredConference;
 }
 
 export async function updateConference(conferenceId: number, updateConferenceRequestBody: any) {
