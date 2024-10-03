@@ -6,10 +6,7 @@ import { Logger } from "@api/utils";
 type SelectConferences = InferSelectModel<typeof conferences>;
 type SelectEvents = InferSelectModel<typeof events>;
 
-interface SearchResult {
-  conference: SelectConferences;
-  events: SelectEvents[];
-}
+type SearchResult = SelectConferences & { events: SelectEvents[] };
 
 export async function searchEvents(query: string): Promise<SearchResult[]> {
   const results = await db
@@ -52,7 +49,7 @@ export async function searchEvents(query: string): Promise<SearchResult[]> {
   for (const conference of matchedConferences) {
     if (conference.acronym) {
       conferenceMap.set(conference.acronym, {
-        conference,
+        ...conference,
         events: [],
       });
     }
