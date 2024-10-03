@@ -44,8 +44,10 @@ const ViewConference = () => {
 
     // Event initialization
     useEffect(() => {
-        const eventItems = events.map((event) => ({ key: event.id, label: event.title }))
+        let eventItems = events.map((event) => ({ key: event.id, label: event.title }))
+        eventItems = eventItems.sort((x, y) => x.key != undefined && y.key != undefined ? x.key - y.key : 0);
 
+        
         const items: MenuItem[] = [
             {
                 key: 'event_group',

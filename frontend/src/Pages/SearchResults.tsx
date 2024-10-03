@@ -42,10 +42,25 @@ const SearchResults = () => {
 
 
     const renderTimeTableCell = (month: string, record: ConferenceWithEvents) => {
+        // debugger;
         const currentDate = new Date();
 
-        if (record.events === undefined || record.events.length == 0)
-            return;
+        if (record.events === undefined || record.events.length == 0) {
+            if (isCurrentMonth(month)) {
+                const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+                const interval = (100 / days) * currentDate.getDate();
+                return (
+                    <div>
+                        <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
+                            <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
+                        </Tooltip>
+                    </div>
+                )
+            }
+
+
+            return (<div></div>)
+        }
 
         const nearFutureEvents: Event[] = record.events
             .filter(event =>
@@ -58,8 +73,22 @@ const SearchResults = () => {
                 new Date(event.cameraReady ?? "") > currentDate
             )
 
-        if (nearFutureEvents.length == 0)
-            return;
+        if (nearFutureEvents.length == 0) {
+            if (isCurrentMonth(month)) {
+                const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+                const interval = (100 / days) * currentDate.getDate();
+                return (
+                    <div>
+                        <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
+                            <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
+                        </Tooltip>
+                    </div>
+                )
+            }
+
+
+            return (<div></div>)
+        }
 
 
         const start = new Date(nearFutureEvents[0].start ?? "");
@@ -232,7 +261,12 @@ const SearchResults = () => {
                         <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "1.5em", cursor: "pointer" }} />} />
 
                         <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
-                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
+                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' 
+                            render={(_: string, record: Conference) => record.website != null ? <Button type='link' href={record.website}>{record.title}</Button> : <span>{record.title}</span>} />
+                        
+                        
+                        
+                        
                         <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfpUrl}>See on Wikicfp</Button>} />
                         <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='coreRank' align="center" width='5%' />
 
