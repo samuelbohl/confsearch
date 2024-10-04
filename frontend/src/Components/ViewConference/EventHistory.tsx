@@ -24,60 +24,7 @@ const EventHistory = ({ event }: { event: EventWithTracks }) => {
         setSteps(result.map(item => ({ title: item.title, description: item.description })))
     }, [])
 
-    const descriptions: DescriptionsProps['items'] = [
-        {
-            key: "1",
-            label: "Acronym",
-            children: event?.acronym
-        },
-        {
-            key: "2",
-            label: "Event Title",
-            children: event?.title
-        },
-        {
-            key: "3",
-            label: "Event Website",
-            children: (
-                <Button style={{ padding: "0" }} type="link" href={event?.event_url} >
-                    {event?.event_url}
-                </Button>
-            )
-        },
-        {
-            key: "4",
-            label: "Event Website (Wikicfp)",
-            children: (
-                <Button style={{ padding: "0" }} type="link" href={event?.wikicfp_url} >
-                    {event?.wikicfp_url}
-                </Button>
-            )
-        },
-        {
-            key: "5",
-            label: "Submission Website",
-            children: (
-                <Button style={{ padding: "0" }} type="link" href={event?.submission_url} >
-                    {event?.submission_url}
-                </Button>
-            )
-        },
-        {
-            key: "6",
-            label: "Location",
-            children: event?.location
-        },
-        {
-            key: "7",
-            label: "Description",
-            children: event?.description
-        },
-        {
-            key: "8",
-            label: "Deadline Notes",
-            children: event?.deadline_notes
-        },
-    ];
+
 
     const generateEventSteps = () => {
         const eventDates: { [id: string]: Date } = {
@@ -142,43 +89,14 @@ const EventHistory = ({ event }: { event: EventWithTracks }) => {
     const cellStyle: CSSProperties = { backgroundColor: "#ffffff", padding: "0.5rem" }
     return (
 
-        <Row gutter={[16, 0]}>
-            <Col span={12}>
-                <Space direction="vertical" size="middle">
-                    <Row>
-                        <Col>
-                            <div style={cellStyle}>
-                                <Descriptions
-                                    bordered
-                                    title="Event Information"
-                                    items={descriptions}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <div style={cellStyle}>
-
-                                <Descriptions title="Event Steps" />
-                                <Steps
-                                    progressDot
-                                    current={currentStep}
-                                    items={steps}
-                                />
-                            </div>
-                        </Col>
-
-                    </Row>
-                </Space>
-            </Col>
-            <Col span={12}>
-                <div style={cellStyle}>
-                    <Descriptions title="Event Track" />
-                    <Calendar />
-                </div>
-            </Col>
-        </Row>
+        <div style={cellStyle}>
+            <Descriptions title="Event Steps" />
+            <Steps
+                progressDot
+                current={currentStep}
+                items={steps}
+            />
+        </div>
     );
 }
 

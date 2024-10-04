@@ -8,7 +8,7 @@ import { Context } from "../Context/Context";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Conference, ConferenceWithEvents, Event } from "../Services";
 import { useQuery } from "@tanstack/react-query";
-import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth } from "../Utils/utils";
+import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth, parseDateString } from "../Utils/utils";
 
 const { Column } = Table;
 
@@ -21,7 +21,6 @@ const SearchResults = () => {
 
     const searchConferences = async () => {
         const params = searchParams.toString().split("=")[1];
-        // console.log(params);
 
         return await appClient.default.getApiV1Search(params)
     }
@@ -31,9 +30,6 @@ const SearchResults = () => {
         queryFn: (searchConferences)
     });
 
-    // useEffect(() => {
-    //     // console.log("aaaaaaa")
-    // }, [isRefetching])
 
     useEffect(() => {
         refetch()
@@ -42,8 +38,14 @@ const SearchResults = () => {
 
 
     const renderTimeTableCell = (month: string, record: ConferenceWithEvents) => {
+        
+        // let currentDate = new Date();
+
+        let currentDate = parseDateString(month);
+        if (isCurrentMonth(month))
+            currentDate = new Date();
+        
         // debugger;
-        const currentDate = new Date();
 
         if (record.events === undefined || record.events.length == 0) {
             if (isCurrentMonth(month)) {
@@ -128,14 +130,14 @@ const SearchResults = () => {
 
         // Build start icon
         const startIcon = (
-            <Tooltip title={<span>Start Date: {start.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Start Date: {start.toDateString()}</span>}>
                 <AiOutlinePlayCircle className="Timetable_Icon" style={{ color: isStartAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build end icon
         const endIcon = (
-            <Tooltip title={<span>End Date: {end.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> End Date: {end.toDateString()}</span>}>
                 <AiOutlineStop
                     className="Timetable_Icon"
                     style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
@@ -145,7 +147,7 @@ const SearchResults = () => {
 
         // Build notification icon
         const notificationIcon = (
-            <Tooltip title={<span>Notification Date: {notificationDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Notification Date: {notificationDue.toDateString()}</span>}>
                 <AiOutlineNotification
                     className="Timetable_Icon"
                     style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
@@ -155,28 +157,28 @@ const SearchResults = () => {
 
         // Build deadline icon
         const deadlineIcon = (
-            <Tooltip title={<span>Deadline Date: {finalDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Deadline Date: {finalDue.toDateString()}</span>}>
                 <AiOutlineClockCircle className="Timetable_Icon" style={{ color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build paper submission icon
         const paperIcon = (
-            <Tooltip title={<span>Paper Submission Date: {paperSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Paper Submission Date: {paperSubmission.toDateString()}</span>}>
                 <AiOutlineFileDone className="Timetable_Icon" style={{ color: isPaperAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build camera ready icon
         const cameraReadyIcon = (
-            <Tooltip title={<span>Camera Ready Date: {cameraReady.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {cameraReady.toDateString()}</span>}>
                 <AiOutlineVideoCamera className="Timetable_Icon" style={{ color: isCameraAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build abstract ready icon
         const abstractIcon = (
-            <Tooltip title={<span>Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
                 <AiOutlineCheckSquare className="Timetable_Icon" style={{ color: isAbstractAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
