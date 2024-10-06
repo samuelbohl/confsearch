@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 const { Header, Content, Footer } = Layout;
 
 
-const NavBar = ({ children, sider, siderTheme }: { children: React.ReactNode, sider?: ReactNode, siderTheme?: SiderTheme }) => {
+const NavBar = ({ children, sider, siderTheme }: { children: ReactNode, sider?: ReactNode, siderTheme?: SiderTheme }) => {
 
     const {
         token: { colorBgContainer },

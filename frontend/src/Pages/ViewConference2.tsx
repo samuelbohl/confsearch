@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../Context/Context";
 import NavBar from "../Components/NavBar";
-import { Button, Descriptions, DescriptionsProps, Layout, Menu, MenuProps, StepProps, Steps, Tabs, TabsProps } from "antd";
-import Sider from "antd/es/layout/Sider";
+import { Button, Descriptions, DescriptionsProps, Form, Layout, Menu, MenuProps, StepProps, Steps, Tabs, TabsProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { MenuItemGroupType, MenuItemType } from "antd/es/menu/interface";
 import { EventWithTracks } from "../Services";
-import EventHistory from "../Components/ViewConference/EventHistory";
+import ConferenceFormDef from "../Components/ViewConference/ConferenceFormDef";
+import DescriptionHeader from "../Components/ViewConference/DescriptionHeader";
 
 type MenuItem = Required<MenuProps>['items'][number];
-type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
 
 const ViewConference = () => {
     // Context
@@ -19,17 +19,23 @@ const ViewConference = () => {
     // End of Context
 
     // State
-    const [activeKey, setActiveKey] = useState<string>("");
+    // const [activeKey, setActiveKey] = useState<string>("");
     const [events, setEvents] = useState<EventWithTracks[]>([]);
     const [menuEvents, setMenuEvents] = useState<MenuItem[]>([]);
-    const [tabEvents, setTabEvents] = useState<TabsProps["items"]>([]);
+    // const [tabEvents, setTabEvents] = useState<TabsProps["items"]>([]);
 
     const [eventDescriptions, setEventDescriptions] = useState<DescriptionsProps['items']>();
     const [hasSelectedEvent, setHasSelectedEvent] = useState<boolean>(false);
 
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [steps, setSteps] = useState<StepProps[]>([]);
-    // End of State
+
+    const [conferenceForm] = Form.useForm()
+    const [isEditingConference, setIsEditingConference] = useState<boolean>(false);
+
+    const [eventForm] = Form.useForm()
+    const [isEditingEvent, setIsEditingEvent] = useState<boolean>(false);
+    // End of State 
 
     // Page params
     const [searchParams] = useSearchParams()
@@ -69,9 +75,9 @@ const ViewConference = () => {
     // End of Event initialization
 
     // Tabs controls
-    const onTabChange = (newActiveKey: string) => {
-        setActiveKey(newActiveKey);
-    }
+    // const onTabChange = (newActiveKey: string) => {
+    //     setActiveKey(newActiveKey);
+    // }
 
     const generateEventSteps = (event: EventWithTracks) => {
 
@@ -227,7 +233,7 @@ const ViewConference = () => {
 
             break;
         }
-        setCurrentStep(i-1);
+        setCurrentStep(i - 1);
 
         setSteps(result.map(item => ({ title: item.title, description: item.description })))
 
@@ -245,38 +251,6 @@ const ViewConference = () => {
             setTabEvents(newTabEvents);
         }
     };
-
-    const remove = (targetKey: TargetKey) => {
-        let newActiveKey = activeKey;
-        let lastIndex = -1;
-        if (!tabEvents || tabEvents.length == 0)
-            return
-
-        tabEvents.forEach((item, i) => {
-            if (item.key === targetKey) {
-                lastIndex = i - 1;
-            }
-        });
-        const newPanes = tabEvents.filter((item) => item.key !== targetKey);
-        if (newPanes.length && newActiveKey === targetKey) {
-            if (lastIndex >= 0) {
-                newActiveKey = newPanes[lastIndex].key;
-            } else {
-                newActiveKey = newPanes[0].key;
-            }
-        }
-        setTabEvents(newPanes);
-        setActiveKey(newActiveKey);
-    };
-
-    const onTabEdit = (
-        targetKey: React.MouseEvent | React.KeyboardEvent | string,
-        action: 'add' | 'remove',
-    ) => {
-        if (action === 'remove') {
-            remove(targetKey);
-        }
-    }
     // End of tab controls
 
     const conferenceInformation: DescriptionsProps['items'] = [
@@ -313,7 +287,11 @@ const ViewConference = () => {
             label: "Core Rank",
             children: queryResult?.data?.coreRank
         }
-    ]
+    ];
+
+    const saveConference = () => { };
+
+    const saveEvent = () => { };
 
     return (
         <NavBar
@@ -331,11 +309,27 @@ const ViewConference = () => {
                 <Content style={{ padding: "0 0.5rem", overflow: 'initial' }}>
 
                     <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
-                        <Descriptions
-                            bordered
-                            title="Conference Information"
-                            items={conferenceInformation}
-                        />
+                        <Form
+                            form={conferenceForm}
+                            initialValues={queryResult?.data}
+                        >
+                            <Descriptions
+                                size="small"
+                                bordered
+                                // title="Conference Information"
+                                title={
+                                    <DescriptionHeader
+                                        headerTxt="Conference Information"
+                                        isEditing={isEditingConference}
+                                        setIsEditing={setIsEditingConference}
+                                        save={saveConference}
+                                    />
+                                }
+                                items={isEditingConference ? ConferenceFormDef : conferenceInformation}
+                                style={{ backgroundColor: "#ffffff", padding: "0.5rem" }}
+                            />
+
+                        </Form>
                     </div>
 
                     {
@@ -344,7 +338,14 @@ const ViewConference = () => {
                                 <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
                                     <Descriptions
                                         bordered
-                                        title="Event Information"
+                                        title={
+                                            <DescriptionHeader
+                                                headerTxt="Event Information"
+                                                isEditing={isEditingEvent}
+                                                setIsEditing={setIsEditingEvent}
+                                                save={saveEvent}
+                                            />
+                                        }
                                         items={eventDescriptions}
                                     />
                                 </div>
