@@ -2,14 +2,20 @@ import { DescriptionsProps, Form, Input } from "antd";
 import { Rule } from "antd/es/form";
 
 const requiredRule: Rule = { required: true, message: "Cannot be empty" };
-const urlRule: Rule = { type: "url", message: "Must be a link" };
+const urlRule: Rule = {
+    type: "url", 
+    message: "Must be a link", 
+    transform: (value) => {
+        return encodeURI(value);
+    },
+};
 
 const ConferenceFormDef: DescriptionsProps['items'] = [
     {
         key: "1",
         label: "Acronym",
         children: (
-            <Form.Item name="acronym" style={{ marginBottom: 0 }} rules={[requiredRule]}>
+            <Form.Item name="acronym" style={{ marginBottom: 0, width: "4rem" }} rules={[requiredRule]}>
                 <Input />
             </Form.Item>
         ),
@@ -33,7 +39,7 @@ const ConferenceFormDef: DescriptionsProps['items'] = [
     //     ),
     // },
     {
-        key: "4",
+        key: "3",
         label: "Conference Website (Wikicfp)",
         children: (
             <Form.Item name="wikicfpUrl" style={{ marginBottom: 0 }} rules={[requiredRule, urlRule]}>
@@ -42,10 +48,19 @@ const ConferenceFormDef: DescriptionsProps['items'] = [
         ),
     },
     {
-        key: "5",
+        key: "4",
         label: "Core Rank",
         children: (
             <Form.Item name="coreRank" style={{ marginBottom: 0, width: "4rem" }} rules={[requiredRule]}>
+                <Input />
+            </Form.Item>
+        ),
+    },
+    {
+        key: "5",
+        label: "Rank Source",
+        children: (
+            <Form.Item name="rankSource" style={{ marginBottom: 0, width: "8rem" }} rules={[]}>
                 <Input />
             </Form.Item>
         ),

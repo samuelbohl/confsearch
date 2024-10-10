@@ -6,7 +6,7 @@ import { Content } from "antd/es/layout/layout";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { MenuItemGroupType, MenuItemType } from "antd/es/menu/interface";
-import { EventWithTracks } from "../Services";
+import { Conference, EventWithTracks } from "../Services";
 import ConferenceFormDef from "../Components/ViewConference/ConferenceFormDef";
 import DescriptionHeader from "../Components/ViewConference/DescriptionHeader";
 
@@ -51,6 +51,7 @@ const ViewConference = () => {
     useEffect(() => {
         console.log(queryResult)
         setEvents(queryResult?.data?.events ?? []);
+        conferenceForm.setFieldsValue(queryResult?.data);
     }, [queryResult])
     // End of Page Params
 
@@ -278,7 +279,7 @@ const ViewConference = () => {
             label: "Conference Website (Wikicfp)",
             children: (
                 <Button style={{ padding: "0" }} type="link" href={queryResult?.data?.wikicfpUrl} >
-                    {queryResult?.data?.wikicfpUrl}
+                    {encodeURI(queryResult?.data?.wikicfpUrl ?? "")}
                 </Button>
             )
         },
@@ -286,10 +287,29 @@ const ViewConference = () => {
             key: "5",
             label: "Core Rank",
             children: queryResult?.data?.coreRank
+        },
+        {
+            key: "6",
+            label: "Rank Source",
+            children: queryResult?.data?.rankSource
         }
     ];
 
-    const saveConference = () => { };
+    const saveConference = () => { conferenceForm.submit() };
+
+    const submitConference = (e: Conference) => {
+        console.log(e, queryResult)
+
+        const conference = {...queryResult?.data};
+        conference.acronym = e.acronym;
+        conference.title = e.title;
+        conference.coreRank = e.coreRank;
+        conference.wikicfpUrl = e.wikicfpUrl;
+        conference.rankSource = e.rankSource;
+
+
+        debugger;
+    }
 
     const saveEvent = () => { };
 
@@ -311,12 +331,11 @@ const ViewConference = () => {
                     <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
                         <Form
                             form={conferenceForm}
-                            initialValues={queryResult?.data}
+                            onFinish={submitConference}
                         >
                             <Descriptions
                                 size="small"
                                 bordered
-                                // title="Conference Information"
                                 title={
                                     <DescriptionHeader
                                         headerTxt="Conference Information"
@@ -325,6 +344,7 @@ const ViewConference = () => {
                                         save={saveConference}
                                     />
                                 }
+                                column={2}
                                 items={isEditingConference ? ConferenceFormDef : conferenceInformation}
                                 style={{ backgroundColor: "#ffffff", padding: "0.5rem" }}
                             />
