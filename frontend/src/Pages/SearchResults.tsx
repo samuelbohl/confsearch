@@ -14,8 +14,10 @@ const { Column } = Table;
 
 const SearchResults = () => {
 
-    const { appClient } = useContext(Context)
+    const { appClient, notificationApi } = useContext(Context)
     const navigate = useNavigate()
+    // const [api, contextHolder] = notification.useNotification();
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -25,26 +27,46 @@ const SearchResults = () => {
         return await appClient.default.getApiV1Search(params)
     }
 
-    const { data: results, refetch: refetch, isLoading: loading } = useQuery({
+    const { data: results, refetch: refetch, isLoading: loading, isError: isError, error: error } = useQuery({
         queryKey: ["search"],
         queryFn: (searchConferences)
     });
 
+    useEffect(() => {
+        console.log("query failed: ", isError)
+        if (isError) {
+            console.log(error.message)
+            triggerError();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isError, error])
+
 
     useEffect(() => {
+        console.log("refetching")
         refetch()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
 
 
+    const triggerError = () => {
+        notificationApi.error({
+            message: <Context.Consumer>{() => error?.name}</Context.Consumer>,
+            description: <Context.Consumer>{() => error?.message}</Context.Consumer>,
+            placement: "topRight",
+            duration: 4
+        })
+    }
+
+
     const renderTimeTableCell = (month: string, record: ConferenceWithEvents) => {
-        
+
         // let currentDate = new Date();
 
         let currentDate = parseDateString(month);
         if (isCurrentMonth(month))
             currentDate = new Date();
-        
+
         // debugger;
 
         if (record.events === undefined || record.events.length == 0) {
@@ -130,14 +152,14 @@ const SearchResults = () => {
 
         // Build start icon
         const startIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Start Date: {start.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Start Date: {start.toDateString()}</span>}>
                 <AiOutlinePlayCircle className="Timetable_Icon" style={{ color: isStartAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build end icon
         const endIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> End Date: {end.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> End Date: {end.toDateString()}</span>}>
                 <AiOutlineStop
                     className="Timetable_Icon"
                     style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
@@ -147,7 +169,7 @@ const SearchResults = () => {
 
         // Build notification icon
         const notificationIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Notification Date: {notificationDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Notification Date: {notificationDue.toDateString()}</span>}>
                 <AiOutlineNotification
                     className="Timetable_Icon"
                     style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
@@ -157,28 +179,28 @@ const SearchResults = () => {
 
         // Build deadline icon
         const deadlineIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Deadline Date: {finalDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Deadline Date: {finalDue.toDateString()}</span>}>
                 <AiOutlineClockCircle className="Timetable_Icon" style={{ color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build paper submission icon
         const paperIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Paper Submission Date: {paperSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Paper Submission Date: {paperSubmission.toDateString()}</span>}>
                 <AiOutlineFileDone className="Timetable_Icon" style={{ color: isPaperAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build camera ready icon
         const cameraReadyIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {cameraReady.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Camera Ready Date: {cameraReady.toDateString()}</span>}>
                 <AiOutlineVideoCamera className="Timetable_Icon" style={{ color: isCameraAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build abstract ready icon
         const abstractIcon = (
-            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br /> Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
                 <AiOutlineCheckSquare className="Timetable_Icon" style={{ color: isAbstractAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
@@ -238,9 +260,13 @@ const SearchResults = () => {
     //     },
     // ]
 
+    // if (isError && !loading) {
+    //     triggerError();
+    // }
 
     return (
         <NavBar>
+            {/* {contextHolder} */}
             <div className="SearchResults_Body">
                 <SearchBar />
 
@@ -263,12 +289,12 @@ const SearchResults = () => {
                         <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "1.5em", cursor: "pointer" }} />} />
 
                         <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
-                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' 
+                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%'
                             render={(_: string, record: Conference) => record.website != null ? <Button type='link' href={record.website}>{record.title}</Button> : <span>{record.title}</span>} />
-                        
-                        
-                        
-                        
+
+
+
+
                         <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfpUrl}>See on Wikicfp</Button>} />
                         <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='coreRank' align="center" width='5%' />
 

@@ -3,29 +3,33 @@ import { Context } from "../Context/Context";
 import NavBar from "../Components/NavBar";
 import { Button, Descriptions, DescriptionsProps, Form, Layout, Menu, MenuProps, StepProps, Steps, Tabs, TabsProps } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { MenuItemGroupType, MenuItemType } from "antd/es/menu/interface";
-import { Conference, EventWithTracks } from "../Services";
+import { Conference, ConferenceResponse, Event, EventWithTracks } from "../Services";
 import ConferenceFormDef from "../Components/ViewConference/ConferenceFormDef";
 import DescriptionHeader from "../Components/ViewConference/DescriptionHeader";
+import EventFormDef from "../Components/ViewConference/EventFormDef";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 
 const ViewConference = () => {
     // Context
-    const { appClient } = useContext(Context);
+    const { appClient, notificationApi } = useContext(Context);
     // End of Context
 
     // State
-    // const [activeKey, setActiveKey] = useState<string>("");
+    const [activeKey, setActiveKey] = useState<string>("");
     const [events, setEvents] = useState<EventWithTracks[]>([]);
     const [menuEvents, setMenuEvents] = useState<MenuItem[]>([]);
-    // const [tabEvents, setTabEvents] = useState<TabsProps["items"]>([]);
+    const [tabEvents, setTabEvents] = useState<TabsProps["items"]>([]);
 
     const [eventDescriptions, setEventDescriptions] = useState<DescriptionsProps['items']>();
     const [hasSelectedEvent, setHasSelectedEvent] = useState<boolean>(false);
+    const [conferenceInformation, setConferenceInformation] = useState<DescriptionsProps['items']>();
+
+    const [hasEventTrack, setHasEventTrack] = useState<boolean>(false);
 
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [steps, setSteps] = useState<StepProps[]>([]);
@@ -46,12 +50,22 @@ const ViewConference = () => {
         return await appClient.default.getApiV1Conferences1(parseInt(id ?? ""));
     }
 
+    const updateConfereceFn = ({ conferenceId, body }: { conferenceId: number, body: Conference }) => {
+
+        return appClient.default.putApiV1Conferences(conferenceId, body);
+    }
+
     const { data: queryResult } = useQuery({ queryKey: ["conference"], queryFn: getConference })
+
+    const { mutate: updateConference } = useMutation({
+        mutationFn: updateConfereceFn
+    })
 
     useEffect(() => {
         console.log(queryResult)
         setEvents(queryResult?.data?.events ?? []);
         conferenceForm.setFieldsValue(queryResult?.data);
+        setConferenceInformation(generateConferenceInformation(queryResult))
     }, [queryResult])
     // End of Page Params
 
@@ -163,6 +177,93 @@ const ViewConference = () => {
             return;
 
         // Show the event
+        const newEventDescriptions = generateEventDescriptions(event);
+        setEventDescriptions(newEventDescriptions)
+        eventForm.setFieldsValue(event)
+        setHasSelectedEvent(true)
+
+        // Generate the timeline control
+        const result = generateEventSteps(event);
+
+        // Set current step
+        const currentDate = new Date();
+        let i = 0;
+        for (i = 0; i < result.length; i++) {
+            const item = result[i];
+            if (item.date < currentDate)
+                continue;
+
+            break;
+        }
+        setCurrentStep(i - 1);
+
+        setSteps(result.map(item => ({ title: item.title, description: item.description })))
+
+        setHasEventTrack(false)
+
+        // Set the tabs for the event tracks if they exist
+        if (event.tracks && event.tracks.length > 0) {
+            const newTabEvents: TabsProps["items"] = [];
+
+            event.tracks?.forEach((track, index) => {
+                const label = track?.name;
+                //<EventHistory event={event} />
+                newTabEvents.push({ label: label, children: <span>{label}</span>, key: (index + 1).toString() });
+            })
+
+            setActiveKey("1");
+            setTabEvents(newTabEvents);
+            setHasEventTrack(true)
+        } else {
+            setHasEventTrack(false)
+        }
+    };
+    // End of tab controls
+
+    const generateConferenceInformation = (queryResult: ConferenceResponse | undefined) => {
+        return [
+            {
+                key: "1",
+                label: "Acronym",
+                children: queryResult?.data?.acronym
+            },
+            {
+                key: "2",
+                label: "Conference Title",
+                children: queryResult?.data?.title
+            },
+            // {
+            //     key: "3",
+            //     label: "Conference Website",
+            //     children: (
+            //         <Button style={{ padding: "0" }} type="link" href={queryResult?.data?.website} >
+            //             {queryResult?.data?.website}
+            //         </Button>
+            //     )
+            // },
+            {
+                key: "4",
+                label: "Conference Website (Wikicfp)",
+                children: (
+                    <Button style={{ padding: "0" }} type="link" href={queryResult?.data?.wikicfpUrl} >
+                        {encodeURI(queryResult?.data?.wikicfpUrl ?? "")}
+                    </Button>
+                )
+            },
+            {
+                key: "5",
+                label: "Core Rank",
+                children: queryResult?.data?.coreRank
+            },
+            {
+                key: "6",
+                label: "Rank Source",
+                children: queryResult?.data?.rankSource
+            }
+        ] as DescriptionsProps['items']
+    }
+
+    const generateEventDescriptions = (event: Event) => {
         const newEventDescriptions: DescriptionsProps['items'] = [
             {
                 key: "1",
@@ -218,100 +319,63 @@ const ViewConference = () => {
             },
         ];
 
-        setEventDescriptions(newEventDescriptions)
-        setHasSelectedEvent(true)
-
-        // Generate the timeline control
-        const result = generateEventSteps(event);
-
-        // Set current step
-        const currentDate = new Date();
-        let i = 0;
-        for (i = 0; i < result.length; i++) {
-            const item = result[i];
-            if (item.date < currentDate)
-                continue;
-
-            break;
-        }
-        setCurrentStep(i - 1);
-
-        setSteps(result.map(item => ({ title: item.title, description: item.description })))
-
-        // Set the tabs for the event tracks if they exist
-        if (event.tracks && event.tracks.length > 0) {
-            const newTabEvents: TabsProps["items"] = [];
-
-            event.tracks?.forEach((track, index) => {
-                const label = track?.name;
-                //<EventHistory event={event} />
-                newTabEvents.push({ label: label, children: <span>{label}</span>, key: (index + 1).toString() });
-            })
-
-            setActiveKey("1");
-            setTabEvents(newTabEvents);
-        }
-    };
-    // End of tab controls
-
-    const conferenceInformation: DescriptionsProps['items'] = [
-        {
-            key: "1",
-            label: "Acronym",
-            children: queryResult?.data?.acronym
-        },
-        {
-            key: "2",
-            label: "Conference Title",
-            children: queryResult?.data?.title
-        },
-        // {
-        //     key: "3",
-        //     label: "Conference Website",
-        //     children: (
-        //         <Button style={{ padding: "0" }} type="link" href={queryResult?.data?.website} >
-        //             {queryResult?.data?.website}
-        //         </Button>
-        //     )
-        // },
-        {
-            key: "4",
-            label: "Conference Website (Wikicfp)",
-            children: (
-                <Button style={{ padding: "0" }} type="link" href={queryResult?.data?.wikicfpUrl} >
-                    {encodeURI(queryResult?.data?.wikicfpUrl ?? "")}
-                </Button>
-            )
-        },
-        {
-            key: "5",
-            label: "Core Rank",
-            children: queryResult?.data?.coreRank
-        },
-        {
-            key: "6",
-            label: "Rank Source",
-            children: queryResult?.data?.rankSource
-        }
-    ];
-
-    const saveConference = () => { conferenceForm.submit() };
+        return newEventDescriptions;
+    }
 
     const submitConference = (e: Conference) => {
-        console.log(e, queryResult)
-
-        const conference = {...queryResult?.data};
+        const conference = { ...queryResult?.data } as Conference;
         conference.acronym = e.acronym;
         conference.title = e.title;
         conference.coreRank = e.coreRank;
         conference.wikicfpUrl = e.wikicfpUrl;
         conference.rankSource = e.rankSource;
 
+        const conferenceId = parseInt(searchParams.get("id") ?? "");
 
-        debugger;
+        updateConference(
+            { conferenceId: conferenceId, body: conference },
+            {
+                onSuccess: async (data) => {
+                    const newConference = data.data[0]
+                    // debugger;
+                    conferenceForm.setFieldsValue(newConference);
+                    setConferenceInformation(generateConferenceInformation({ data: newConference }))
+                    setIsEditingConference(false);
+                    if (data.error) {
+                        triggerError(data.error);
+                        return
+                    }
+                    triggerSuccess({ name: "Update Conference", message: "Successful update of " + newConference.acronym + " conference" })
+                },
+                onError: (error) => {
+                    setIsEditingConference(false);
+                    triggerError(error);
+                }
+            }
+        )
+        // debugger;
     }
 
-    const saveEvent = () => { };
+    const submitEvent = () => { };
+
+    const triggerSuccess = (success: { name: string, message: string }) => {
+        notificationApi.success({
+            message: <Context.Consumer>{() => success?.name}</Context.Consumer>,
+            description: <Context.Consumer>{() => success?.message}</Context.Consumer>,
+            placement: "topRight",
+            duration: 4
+        })
+    }
+
+    const triggerError = (error: { name: string, message: string }) => {
+        notificationApi.error({
+            message: <Context.Consumer>{() => error?.name}</Context.Consumer>,
+            description: <Context.Consumer>{() => error?.message}</Context.Consumer>,
+            placement: "topRight",
+            duration: 4
+        })
+    }
+
 
     return (
         <NavBar
@@ -320,6 +384,7 @@ const ViewConference = () => {
                     onClick={onMenuSelect}
                     mode="inline"
                     items={menuEvents}
+                    style={{ height: "100%", overflowY: "auto" }}
                 />
             }
             siderTheme="light"
@@ -341,9 +406,10 @@ const ViewConference = () => {
                                         headerTxt="Conference Information"
                                         isEditing={isEditingConference}
                                         setIsEditing={setIsEditingConference}
-                                        save={saveConference}
+                                        save={() => conferenceForm.submit()}
                                     />
                                 }
+                                labelStyle={{ maxWidth: "10rem" }}
                                 column={2}
                                 items={isEditingConference ? ConferenceFormDef : conferenceInformation}
                                 style={{ backgroundColor: "#ffffff", padding: "0.5rem" }}
@@ -356,18 +422,27 @@ const ViewConference = () => {
                         hasSelectedEvent ?
                             <>
                                 <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
-                                    <Descriptions
-                                        bordered
-                                        title={
-                                            <DescriptionHeader
-                                                headerTxt="Event Information"
-                                                isEditing={isEditingEvent}
-                                                setIsEditing={setIsEditingEvent}
-                                                save={saveEvent}
-                                            />
-                                        }
-                                        items={eventDescriptions}
-                                    />
+                                    <Form
+                                        form={eventForm}
+                                        onFinish={submitEvent}
+                                    >
+                                        <Descriptions
+                                            bordered
+                                            size="small"
+                                            title={
+                                                <DescriptionHeader
+                                                    headerTxt="Event Information"
+                                                    isEditing={isEditingEvent}
+                                                    setIsEditing={setIsEditingEvent}
+                                                    save={() => eventForm.submit()}
+                                                />
+                                            }
+                                            column={2}
+                                            labelStyle={{ maxWidth: "10rem" }}
+                                            style={{ backgroundColor: "#ffffff", padding: "0.5rem" }}
+                                            items={isEditingEvent ? EventFormDef : eventDescriptions}
+                                        />
+                                    </Form>
                                 </div>
 
                                 <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
@@ -376,26 +451,32 @@ const ViewConference = () => {
                                         progressDot
                                         current={currentStep}
                                         items={steps}
+                                        size="small"
                                     />
                                 </div>
+
+                                {hasEventTrack ?
+                                    <div style={{ backgroundColor: "#ffffff", padding: "1rem", borderRadius: "1rem", marginBottom: "1rem" }}>
+                                        <Tabs
+                                            type="editable-card"
+                                            activeKey={activeKey}
+                                            defaultActiveKey="1"
+                                            items={tabEvents}
+                                            // onChange={onTabChange}
+                                            // onEdit={onTabEdit}
+                                            hideAdd
+                                        />
+                                    </div>
+                                    :
+                                    <></>
+                                }
                             </>
                             :
                             <></>
                     }
 
-
-                    {/* <Tabs
-                        type="editable-card"
-                        activeKey={activeKey}
-                        defaultActiveKey="1"
-                        items={tabEvents}
-                        onChange={onTabChange}
-                        onEdit={onTabEdit}
-                        hideAdd
-                        hidden={tabEvents == undefined || tabEvents.length == 0}
-                    /> */}
                 </Content>
-            </Layout>
+            </Layout >
 
 
         </NavBar >

@@ -3,11 +3,14 @@ import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState }
 import { createContext } from "react";
 import { ConfSearchClient } from "../Services";
 import SERVER_URL from "../appsettings";
+import { notification } from "antd";
+import { NotificationInstance } from "antd/es/notification/interface";
 
 type AppContext = {
 	appClient: ConfSearchClient;
 	searchValue: string;
-	setSearchValue: React.Dispatch<React.SetStateAction<string>>
+	setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+	notificationApi: NotificationInstance;
 };
 
 export const Context = createContext({} as AppContext);
@@ -21,14 +24,18 @@ export const ContextProvider = (props: { children: string | number | boolean | R
 
 	const [searchValue, setSearchValue] = useState<string>("");
 
+	const [notificationApi, contextHolder] = notification.useNotification();
+
 	return (
 		<Context.Provider
 			value={{
 				appClient,
 				searchValue,
-				setSearchValue
+				setSearchValue,
+				notificationApi
 			}}
 		>
+			{contextHolder}
 			{props.children}
 		</Context.Provider>
 	);
