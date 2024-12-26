@@ -8,7 +8,7 @@ import { Context } from "../Context/Context";
 import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Conference, ConferenceWithEvents, Event } from "../Services";
 import { useQuery } from "@tanstack/react-query";
-import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth } from "../Utils/utils";
+import { daysInMonth, get12MonthsAhead, isCurrentMonth, isInThisMonth, parseDateString } from "../Utils/utils";
 
 const { Column } = Table;
 
@@ -21,7 +21,6 @@ const SearchResults = () => {
 
     const searchConferences = async () => {
         const params = searchParams.toString().split("=")[1];
-        // console.log(params);
 
         return await appClient.default.getApiV1Search(params)
     }
@@ -31,9 +30,6 @@ const SearchResults = () => {
         queryFn: (searchConferences)
     });
 
-    // useEffect(() => {
-    //     // console.log("aaaaaaa")
-    // }, [isRefetching])
 
     useEffect(() => {
         refetch()
@@ -42,67 +38,106 @@ const SearchResults = () => {
 
 
     const renderTimeTableCell = (month: string, record: ConferenceWithEvents) => {
-        const currentDate = new Date();
+        
+        // let currentDate = new Date();
 
-        let nearFutureEvents: Event[] = [];
-        if (record.events !== undefined && record.events.length > 0) {
-            nearFutureEvents = record.events
-                .filter(event =>
-                    new Date(event.start ?? "") > currentDate ||
-                    new Date(event.end ?? "") > currentDate ||
-                    new Date(event.paper_submission ?? "") > currentDate ||
-                    new Date(event.abstract_submission ?? "") > currentDate ||
-                    new Date(event.notification_due ?? "") > currentDate ||
-                    new Date(event.final_due ?? "") > currentDate ||
-                    new Date(event.camera_ready ?? "") > currentDate
+        let currentDate = parseDateString(month);
+        if (isCurrentMonth(month))
+            currentDate = new Date();
+        
+        // debugger;
+
+        if (record.events === undefined || record.events.length == 0) {
+            if (isCurrentMonth(month)) {
+                const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+                const interval = (100 / days) * currentDate.getDate();
+                return (
+                    <div>
+                        <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
+                            <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
+                        </Tooltip>
+                    </div>
                 )
+            }
+
+
+            return (<div></div>)
         }
+
+        const nearFutureEvents: Event[] = record.events
+            .filter(event =>
+                new Date(event.start ?? "") > currentDate ||
+                new Date(event.end ?? "") > currentDate ||
+                new Date(event.paperSubmission ?? "") > currentDate ||
+                new Date(event.abstractSubmission ?? "") > currentDate ||
+                new Date(event.notificationDue ?? "") > currentDate ||
+                new Date(event.finalDue ?? "") > currentDate ||
+                new Date(event.cameraReady ?? "") > currentDate
+            )
+
+        if (nearFutureEvents.length == 0) {
+            if (isCurrentMonth(month)) {
+                const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+                const interval = (100 / days) * currentDate.getDate();
+                return (
+                    <div>
+                        <Tooltip title={<span>Current Date: {currentDate.toDateString()}</span>}>
+                            <div className="Timetable_Marker" style={{ left: `${interval}%` }}></div>
+                        </Tooltip>
+                    </div>
+                )
+            }
+
+
+            return (<div></div>)
+        }
+
 
         const start = new Date(nearFutureEvents[0].start ?? "");
         const end = new Date(nearFutureEvents[0].end ?? "");
-        const notificationDue = new Date(nearFutureEvents[0].notification_due ?? "");
-        const finalDue = new Date(nearFutureEvents[0].final_due ?? "");
-        const abstractSubmission = new Date(nearFutureEvents[0].abstract_submission ?? "");
-        const paperSubmission = new Date(nearFutureEvents[0].paper_submission ?? "");
-        const cameraReady = new Date(nearFutureEvents[0].camera_ready ?? "");
+        const notificationDue = new Date(nearFutureEvents[0].notificationDue ?? "");
+        const finalDue = new Date(nearFutureEvents[0].finalDue ?? "");
+        const abstractSubmission = new Date(nearFutureEvents[0].abstractSubmission ?? "");
+        const paperSubmission = new Date(nearFutureEvents[0].paperSubmission ?? "");
+        const cameraReady = new Date(nearFutureEvents[0].cameraReady ?? "");
 
         // Check if conference has essential dates for the current month
         const hasStart = nearFutureEvents[0].start ? isInThisMonth(start, month) : false;
         const hasEnd = nearFutureEvents[0].end ? isInThisMonth(end, month) : false;
-        const hasNotification = nearFutureEvents[0].notification_due ? isInThisMonth(notificationDue, month) : false;
-        const hasDeadline = nearFutureEvents[0].final_due ? isInThisMonth(finalDue, month) : false;
-        const hasAbstractSubmission = nearFutureEvents[0].abstract_submission ? isInThisMonth(abstractSubmission, month) : false;
-        const hasPaperSubmission = nearFutureEvents[0].paper_submission ? isInThisMonth(paperSubmission, month) : false;
-        const hasCameraReady = nearFutureEvents[0].camera_ready ? isInThisMonth(cameraReady, month) : false;
+        const hasNotification = nearFutureEvents[0].notificationDue ? isInThisMonth(notificationDue, month) : false;
+        const hasDeadline = nearFutureEvents[0].finalDue ? isInThisMonth(finalDue, month) : false;
+        const hasAbstractSubmission = nearFutureEvents[0].abstractSubmission ? isInThisMonth(abstractSubmission, month) : false;
+        const hasPaperSubmission = nearFutureEvents[0].paperSubmission ? isInThisMonth(paperSubmission, month) : false;
+        const hasCameraReady = nearFutureEvents[0].cameraReady ? isInThisMonth(cameraReady, month) : false;
 
         // Check if conference dates are after the current date
         const isStartAfter = nearFutureEvents[0].start ? start > currentDate : false;
         const isEndAfter = nearFutureEvents[0].end ? end > currentDate : false;
-        const isNotificationAfter = nearFutureEvents[0].notification_due ? notificationDue > currentDate : false;
-        const isDeadlineAfter = nearFutureEvents[0].final_due ? finalDue > currentDate : false;
-        const isAbstractAfter = nearFutureEvents[0].abstract_submission ? abstractSubmission > currentDate : false;
-        const isPaperAfter = nearFutureEvents[0].paper_submission ? paperSubmission > currentDate : false;
-        const isCameraAfter = nearFutureEvents[0].camera_ready ? cameraReady > currentDate : false;
+        const isNotificationAfter = nearFutureEvents[0].notificationDue ? notificationDue > currentDate : false;
+        const isDeadlineAfter = nearFutureEvents[0].finalDue ? finalDue > currentDate : false;
+        const isAbstractAfter = nearFutureEvents[0].abstractSubmission ? abstractSubmission > currentDate : false;
+        const isPaperAfter = nearFutureEvents[0].paperSubmission ? paperSubmission > currentDate : false;
+        const isCameraAfter = nearFutureEvents[0].cameraReady ? cameraReady > currentDate : false;
 
         // Check if conference dates are on the same year as the current date
         const isStartSameYear = nearFutureEvents[0].start ? start.getFullYear() == currentDate.getFullYear() : false;
         const isEndSameYear = nearFutureEvents[0].end ? end.getFullYear() == currentDate.getFullYear() : false;
-        const isNotificationSameYear = nearFutureEvents[0].notification_due ? notificationDue.getFullYear() == currentDate.getFullYear() : false;
-        const isDeadlineSameYear = nearFutureEvents[0].final_due ? finalDue.getFullYear() == currentDate.getFullYear() : false;
-        const isAbstractSameYear = nearFutureEvents[0].abstract_submission ? finalDue.getFullYear() == currentDate.getFullYear() : false;
-        const isPaperSameYear = nearFutureEvents[0].paper_submission ? finalDue.getFullYear() == currentDate.getFullYear() : false;
-        const isCameraSameYear = nearFutureEvents[0].camera_ready ? finalDue.getFullYear() == currentDate.getFullYear() : false;
+        const isNotificationSameYear = nearFutureEvents[0].notificationDue ? notificationDue.getFullYear() == currentDate.getFullYear() : false;
+        const isDeadlineSameYear = nearFutureEvents[0].finalDue ? finalDue.getFullYear() == currentDate.getFullYear() : false;
+        const isAbstractSameYear = nearFutureEvents[0].abstractSubmission ? finalDue.getFullYear() == currentDate.getFullYear() : false;
+        const isPaperSameYear = nearFutureEvents[0].paperSubmission ? finalDue.getFullYear() == currentDate.getFullYear() : false;
+        const isCameraSameYear = nearFutureEvents[0].cameraReady ? finalDue.getFullYear() == currentDate.getFullYear() : false;
 
         // Build start icon
         const startIcon = (
-            <Tooltip title={<span>Start Date: {start.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Start Date: {start.toDateString()}</span>}>
                 <AiOutlinePlayCircle className="Timetable_Icon" style={{ color: isStartAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build end icon
         const endIcon = (
-            <Tooltip title={<span>End Date: {end.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> End Date: {end.toDateString()}</span>}>
                 <AiOutlineStop
                     className="Timetable_Icon"
                     style={{ color: isEndAfter ? "" : "var(--invalid_color)" }}
@@ -112,7 +147,7 @@ const SearchResults = () => {
 
         // Build notification icon
         const notificationIcon = (
-            <Tooltip title={<span>Notification Date: {notificationDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Notification Date: {notificationDue.toDateString()}</span>}>
                 <AiOutlineNotification
                     className="Timetable_Icon"
                     style={{ color: isNotificationAfter ? "" : "var(--invalid_color)" }}
@@ -122,28 +157,28 @@ const SearchResults = () => {
 
         // Build deadline icon
         const deadlineIcon = (
-            <Tooltip title={<span>Deadline Date: {finalDue.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Deadline Date: {finalDue.toDateString()}</span>}>
                 <AiOutlineClockCircle className="Timetable_Icon" style={{ color: isDeadlineAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build paper submission icon
         const paperIcon = (
-            <Tooltip title={<span>Paper Submission Date: {paperSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Paper Submission Date: {paperSubmission.toDateString()}</span>}>
                 <AiOutlineFileDone className="Timetable_Icon" style={{ color: isPaperAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build camera ready icon
         const cameraReadyIcon = (
-            <Tooltip title={<span>Camera Ready Date: {cameraReady.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {cameraReady.toDateString()}</span>}>
                 <AiOutlineVideoCamera className="Timetable_Icon" style={{ color: isCameraAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
 
         // Build abstract ready icon
         const abstractIcon = (
-            <Tooltip title={<span>Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
+            <Tooltip title={<span>Event: {nearFutureEvents[0].eventAcronym} <br/> Camera Ready Date: {abstractSubmission.toDateString()}</span>}>
                 <AiOutlineCheckSquare className="Timetable_Icon" style={{ color: isAbstractAfter ? "" : "var(--invalid_color)" }} />
             </Tooltip>
         );
@@ -217,7 +252,7 @@ const SearchResults = () => {
                             pageSize: 10,
                             position: ["bottomLeft"]
                         }}
-                        dataSource={results?.map((res, index) => ({ ...res, key: index }))}
+                        dataSource={results?.data?.map((res, index) => ({ ...res, key: index }))}
                         loading={loading}
                     // rowKey="id"
                     // sticky={true}
@@ -228,9 +263,14 @@ const SearchResults = () => {
                         <Column align="center" render={(_, conference: Conference) => <InfoCircleOutlined onClick={() => { viewDetails(conference) }} style={{ fontSize: "1.5em", cursor: "pointer" }} />} />
 
                         <Column title={<span className="SearchResults_Headers">Acronym</span>} dataIndex='acronym' align="center" width='10%' />
-                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' render={(_: string, record: Conference) => <Button type='link' href={record.website}>{record.title}</Button>} />
-                        <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfp_url}>See on Wikicfp</Button>} />
-                        <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='core_rank' align="center" width='5%' />
+                        <Column title={<span className="SearchResults_Headers">Conference Title</span>} dataIndex='title' align="center" width='20%' 
+                            render={(_: string, record: Conference) => record.website != null ? <Button type='link' href={record.website}>{record.title}</Button> : <span>{record.title}</span>} />
+                        
+                        
+                        
+                        
+                        <Column dataIndex='wikicfp_url' align="center" width='5%' render={(_: string, record: Conference) => <Button type='link' href={record.wikicfpUrl}>See on Wikicfp</Button>} />
+                        <Column title={<span className="SearchResults_Headers">Rank</span>} dataIndex='coreRank' align="center" width='5%' />
 
                         {
                             get12MonthsAhead()

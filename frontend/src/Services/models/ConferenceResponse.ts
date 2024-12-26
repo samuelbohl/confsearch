@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ErrorResponse = {
-    data?: null;
-    error?: {
-        message?: string;
-        code?: number;
-    };
+import type { Conference } from './Conference';
+export type ConferenceResponse = {
+    data?: Conference;
+    error?: null;
 };
 

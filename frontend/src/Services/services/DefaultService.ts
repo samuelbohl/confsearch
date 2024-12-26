@@ -3,27 +3,32 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Conference } from '../models/Conference';
-import type { ConferenceWithEvents } from '../models/ConferenceWithEvents';
-import type { ConferenceWithEventsAndTracks } from '../models/ConferenceWithEventsAndTracks';
+import type { ConferenceListResponse } from '../models/ConferenceListResponse';
+import type { ConferenceResponse } from '../models/ConferenceResponse';
+import type { ConferenceWithEventsAndTracksResponse } from '../models/ConferenceWithEventsAndTracksResponse';
+import type { ConferenceWithEventsListResponse } from '../models/ConferenceWithEventsListResponse';
 import type { EventWithTracks } from '../models/EventWithTracks';
+import type { EventWithTracksListResponse } from '../models/EventWithTracksListResponse';
+import type { EventWithTracksResponse } from '../models/EventWithTracksResponse';
+import type { SuccessResponse } from '../models/SuccessResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class DefaultService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Search for conferences
-     * @param keyword
-     * @returns Conference List of conferences
+     * @param query
+     * @returns ConferenceListResponse Successful response
      * @throws ApiError
      */
     public getApiV1Search(
-        keyword: string,
-    ): CancelablePromise<Array<Conference>> {
+        query: string,
+    ): CancelablePromise<ConferenceListResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/v1/search',
             query: {
-                'keyword': keyword,
+                'query': query,
             },
             errors: {
                 400: `Bad Request`,
@@ -32,10 +37,10 @@ export class DefaultService {
     }
     /**
      * Get all events
-     * @returns EventWithTracks List of events
+     * @returns EventWithTracksListResponse Successful response
      * @throws ApiError
      */
-    public getApiV1Events(): CancelablePromise<Array<EventWithTracks>> {
+    public getApiV1Events(): CancelablePromise<EventWithTracksListResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/v1/events',
@@ -48,12 +53,12 @@ export class DefaultService {
     /**
      * Create a new event
      * @param requestBody
-     * @returns EventWithTracks Event created
+     * @returns EventWithTracksResponse Event created
      * @throws ApiError
      */
     public postApiV1Events(
         requestBody: EventWithTracks,
-    ): CancelablePromise<EventWithTracks> {
+    ): CancelablePromise<EventWithTracksResponse> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/api/v1/events',
@@ -68,12 +73,12 @@ export class DefaultService {
     /**
      * Get an event by ID
      * @param eventId
-     * @returns EventWithTracks Event details
+     * @returns EventWithTracksResponse Successful response
      * @throws ApiError
      */
     public getApiV1Events1(
         eventId: number,
-    ): CancelablePromise<EventWithTracks> {
+    ): CancelablePromise<EventWithTracksResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/v1/events/{eventId}',
@@ -90,13 +95,13 @@ export class DefaultService {
      * Update an event
      * @param eventId
      * @param requestBody
-     * @returns EventWithTracks Event updated
+     * @returns EventWithTracksResponse Successful response
      * @throws ApiError
      */
     public putApiV1Events(
         eventId: number,
         requestBody: EventWithTracks,
-    ): CancelablePromise<EventWithTracks> {
+    ): CancelablePromise<EventWithTracksResponse> {
         return this.httpRequest.request({
             method: 'PUT',
             url: '/api/v1/events/{eventId}',
@@ -114,12 +119,12 @@ export class DefaultService {
     /**
      * Delete an event
      * @param eventId
-     * @returns void
+     * @returns SuccessResponse Successful response
      * @throws ApiError
      */
     public deleteApiV1Events(
         eventId: number,
-    ): CancelablePromise<void> {
+    ): CancelablePromise<SuccessResponse> {
         return this.httpRequest.request({
             method: 'DELETE',
             url: '/api/v1/events/{eventId}',
@@ -134,10 +139,10 @@ export class DefaultService {
     }
     /**
      * Get all conferences with their associated events
-     * @returns ConferenceWithEvents List of conferences with events
+     * @returns ConferenceWithEventsListResponse Successful response
      * @throws ApiError
      */
-    public getApiV1Conferences(): CancelablePromise<Array<ConferenceWithEvents>> {
+    public getApiV1Conferences(): CancelablePromise<ConferenceWithEventsListResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/v1/conferences',
@@ -149,12 +154,12 @@ export class DefaultService {
     /**
      * Create a new conference
      * @param requestBody
-     * @returns Conference Conference created
+     * @returns ConferenceResponse Conference created
      * @throws ApiError
      */
     public postApiV1Conferences(
         requestBody: Conference,
-    ): CancelablePromise<Conference> {
+    ): CancelablePromise<ConferenceResponse> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/api/v1/conferences',
@@ -168,12 +173,12 @@ export class DefaultService {
     /**
      * Get a conference by ID with associated events and event tracks
      * @param conferenceId
-     * @returns ConferenceWithEventsAndTracks Conference details with events and event tracks
+     * @returns ConferenceWithEventsAndTracksResponse Successful response
      * @throws ApiError
      */
     public getApiV1Conferences1(
         conferenceId: number,
-    ): CancelablePromise<ConferenceWithEventsAndTracks> {
+    ): CancelablePromise<ConferenceWithEventsAndTracksResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/v1/conferences/{conferenceId}',
@@ -190,13 +195,13 @@ export class DefaultService {
      * Update a conference
      * @param conferenceId
      * @param requestBody
-     * @returns Conference Conference updated
+     * @returns ConferenceResponse Successful response
      * @throws ApiError
      */
     public putApiV1Conferences(
         conferenceId: number,
         requestBody: Conference,
-    ): CancelablePromise<Conference> {
+    ): CancelablePromise<ConferenceResponse> {
         return this.httpRequest.request({
             method: 'PUT',
             url: '/api/v1/conferences/{conferenceId}',
@@ -214,12 +219,12 @@ export class DefaultService {
     /**
      * Delete a conference
      * @param conferenceId
-     * @returns void
+     * @returns SuccessResponse Successful response
      * @throws ApiError
      */
     public deleteApiV1Conferences(
         conferenceId: number,
-    ): CancelablePromise<void> {
+    ): CancelablePromise<SuccessResponse> {
         return this.httpRequest.request({
             method: 'DELETE',
             url: '/api/v1/conferences/{conferenceId}',
